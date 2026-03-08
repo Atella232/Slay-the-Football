@@ -185,13 +185,16 @@ export const athleticCards: Card[] = [
     team: 'athletic',
     keywords: ['exhaust'],
   },
-  {
+    {
     id: 'cantera',
     name: 'Cantera',
     type: 'skill',
-    cost: 1,
-    description: 'Agota 1 carta de tu mano. Gana 6 de bloqueo.',
-    effects: [{ type: 'block', value: 6, target: 'self' }],
+    cost: 0,
+    description: 'Gana 4 de bloqueo. Gana 1 Garra.',
+    effects: [
+      { type: 'block', value: 4, target: 'self' },
+      { type: 'gain_garra', value: 1, target: 'self' },
+    ],
     rarity: 'common',
     team: 'athletic',
   },
@@ -388,15 +391,16 @@ export const barcelonaCards: Card[] = [
     rarity: 'common',
     team: 'barcelona',
   },
-  {
+    {
     id: 'toque_balon',
-    name: 'Toque de Balón',
+    name: 'Toque de Balon',
     type: 'skill',
     cost: 1,
-    description: 'Gana 4 de bloqueo. Roba 1 carta.',
+    description: 'Gana 4 de bloqueo. Roba 1 carta. Gana 1 Posesion.',
     effects: [
       { type: 'block', value: 4, target: 'self' },
       { type: 'draw', value: 1, target: 'self' },
+      { type: 'gain_posesion', value: 1, target: 'self' },
     ],
     rarity: 'common',
     team: 'barcelona',
@@ -428,15 +432,16 @@ export const barcelonaCards: Card[] = [
     rarity: 'common',
     team: 'barcelona',
   },
-  {
+    {
     id: 'presion',
-    name: 'Presión',
+    name: 'Presion',
     type: 'skill',
     cost: 1,
-    description: 'Aplica 2 Débil. Roba 1 carta.',
+    description: 'Aplica 2 Debil. Roba 1 carta. Gana 1 Posesion.',
     effects: [
       { type: 'weak', value: 2, target: 'enemy' },
       { type: 'draw', value: 1, target: 'self' },
+      { type: 'gain_posesion', value: 1, target: 'self' },
     ],
     rarity: 'common',
     team: 'barcelona',
@@ -507,13 +512,16 @@ export const barcelonaCards: Card[] = [
     team: 'barcelona',
   },
   // Cartas raras
-  {
+    {
     id: 'camp_nou',
     name: 'Camp Nou',
     type: 'power',
     cost: 3,
-    description: 'Al inicio de tu turno, roba 1 carta adicional.',
-    effects: [{ type: 'draw_per_turn', value: 1, target: 'self' }],
+    description: 'Al inicio de tu turno, roba 1 carta adicional. Al jugarla, gana 2 Posesion.',
+    effects: [
+      { type: 'draw_per_turn', value: 1, target: 'self' },
+      { type: 'gain_posesion', value: 2, target: 'self' },
+    ],
     rarity: 'rare',
     team: 'barcelona',
   },
@@ -646,52 +654,57 @@ export const madridCards: Card[] = [
     rarity: 'common',
     team: 'madrid',
   },
-  {
+    {
     id: 'contraataque_madrid',
     name: 'Contraataque',
-    type: 'skill',
+    type: 'attack',
     cost: 1,
-    description: 'Inflige 8 de daño. Gana 1 energía si el enemigo atacó el turno anterior.',
+    description: 'Inflige 8 de dano. Gana 1 Momentum. Si el enemigo ataco el turno anterior, gana 1 energia.',
     effects: [
       { type: 'damage', value: 8, target: 'enemy' },
+      { type: 'gain_momentum', value: 1, target: 'self' },
       { type: 'conditional_energy', value: 1, target: 'self', condition: 'enemy_attacked_last_turn' },
     ],
     rarity: 'common',
     team: 'madrid',
   },
-  {
+    {
     id: 'galactico',
-    name: 'Galáctico',
-    type: 'power',
-    cost: 2,
-    description: 'Gana 2 de Fuerza.',
-    effects: [{ type: 'strength', value: 2, target: 'self' }],
-    rarity: 'common',
-    team: 'madrid',
-  },
-  // Cartas comunes
-  {
-    id: 'transicion_rapida',
-    name: 'Transición Rápida',
+    name: 'Galactico',
     type: 'skill',
-    cost: 0,
-    description: 'Gana 1 energía. Roba 1 carta.',
+    cost: 1,
+    description: 'Gana 1 Momentum. El siguiente ataque cuesta 0.',
     effects: [
-      { type: 'energy', value: 1, target: 'self' },
-      { type: 'draw', value: 1, target: 'self' },
+      { type: 'gain_momentum', value: 1, target: 'self' },
+      { type: 'next_attack_free', value: 1, target: 'self' },
     ],
     rarity: 'common',
     team: 'madrid',
   },
-  {
+  // Cartas comunes
+    {
+    id: 'transicion_rapida',
+    name: 'Transicion Rapida',
+    type: 'skill',
+    cost: 0,
+    description: 'Gana 1 energia. Roba 1 carta. Gana 1 Momentum.',
+    effects: [
+      { type: 'energy', value: 1, target: 'self' },
+      { type: 'draw', value: 1, target: 'self' },
+      { type: 'gain_momentum', value: 1, target: 'self' },
+    ],
+    rarity: 'common',
+    team: 'madrid',
+  },
+    {
     id: 'carrera',
     name: 'Carrera',
     type: 'attack',
     cost: 1,
-    description: 'Inflige 7 de daño. Si el enemigo tiene más HP que tú, haz 4 de daño adicional.',
+    description: 'Inflige 7 de dano. Si la carta anterior fue skill, inflige 4 de dano adicional.',
     effects: [
       { type: 'damage', value: 7, target: 'enemy' },
-      { type: 'conditional_damage', value: 4, target: 'enemy', condition: 'enemy_hp_more_than_player' },
+      { type: 'conditional_damage', value: 4, target: 'enemy', condition: 'previous_card_skill' },
     ],
     rarity: 'common',
     team: 'madrid',
@@ -709,15 +722,15 @@ export const madridCards: Card[] = [
     rarity: 'common',
     team: 'madrid',
   },
-  {
+    {
     id: 'remate',
     name: 'Remate',
     type: 'attack',
     cost: 2,
-    description: 'Inflige 12 de daño. Si el enemigo tiene menos de 50% de HP, haz 6 de daño adicional.',
+    description: 'Inflige 12 de dano. Si tienes 3 o mas de Momentum, inflige 6 de dano adicional.',
     effects: [
       { type: 'damage', value: 12, target: 'enemy' },
-      { type: 'conditional_damage', value: 6, target: 'enemy', condition: 'enemy_hp_less_50' },
+      { type: 'conditional_damage', value: 6, target: 'enemy', condition: 'momentum_3' },
     ],
     rarity: 'common',
     team: 'madrid',
@@ -925,3 +938,4 @@ export function getStartingDeck(team: 'athletic' | 'barcelona' | 'madrid'): Card
 
   return deck;
 }
+

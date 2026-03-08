@@ -1,7 +1,7 @@
-ï»¿import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { loadTelemetryData } from '@/lib/telemetry';
+import { buildCardDominanceRows, buildRewardChoiceRows, buildTelemetryInsights, loadTelemetryData } from '@/lib/telemetry';
 import { normalizeText } from '@/lib/text';
 import type { TeamType } from '@/types/game';
 
@@ -21,6 +21,27 @@ function teamLabel(team: TeamType): string {
   return 'Madrid';
 }
 
+function rewardLabel(kind: 'card' | 'relic' | 'potion' | 'gold' | 'boss_relic' | 'skip'): string {
+  if (kind === 'card') return 'Carta';
+  if (kind === 'relic') return 'Reliquia';
+  if (kind === 'potion') return 'Pocion';
+  if (kind === 'gold') return 'Oro';
+  if (kind === 'boss_relic') return 'Boss relic';
+  return 'Skip';
+}
+
+function insightToneClass(tone: 'good' | 'warn' | 'info'): string {
+  if (tone === 'good') return 'border-emerald-300/25 bg-emerald-950/20';
+  if (tone === 'warn') return 'border-amber-300/25 bg-amber-950/20';
+  return 'border-cyan-300/25 bg-cyan-950/20';
+}
+
+function insightEyebrowClass(tone: 'good' | 'warn' | 'info'): string {
+  if (tone === 'good') return 'text-emerald-200';
+  if (tone === 'warn') return 'text-amber-200';
+  return 'text-cyan-200';
+}
+
 export function TelemetryDashboard({ onClose }: TelemetryDashboardProps) {
   const data = useMemo(() => loadTelemetryData(), []);
   const [teamFilter, setTeamFilter] = useState<TeamFilter>('all');
@@ -32,12 +53,14 @@ export function TelemetryDashboard({ onClose }: TelemetryDashboardProps) {
       if (ascensionFilter !== 'all' && run.ascension !== ascensionFilter) return false;
       return true;
     });
-  }, [data.runs, teamFilter, ascensionFilter]);
+  }, [ascensionFilter, data.runs, teamFilter]);
 
   const runIdSet = useMemo(() => new Set(filteredRuns.map(run => run.runId)), [filteredRuns]);
 
   const filteredCardPicks = useMemo(() => data.cardPicks.filter(pick => runIdSet.has(pick.runId)), [data.cardPicks, runIdSet]);
   const filteredRelicPicks = useMemo(() => data.relicPicks.filter(pick => runIdSet.has(pick.runId)), [data.relicPicks, runIdSet]);
+  const filteredRewardOffers = useMemo(() => data.rewardOffers.filter(offer => runIdSet.has(offer.runId)), [data.rewardOffers, runIdSet]);
+  const filteredRewardChoices = useMemo(() => data.rewardChoices.filter(choice => runIdSet.has(choice.runId)), [data.rewardChoices, runIdSet]);
 
   const summary = useMemo(() => {
     const totalRuns = filteredRuns.length;
@@ -55,19 +78,12 @@ export function TelemetryDashboard({ onClose }: TelemetryDashboardProps) {
       };
     });
 
-    const avgDamageDealt =
-      totalRuns > 0 ? filteredRuns.reduce((acc, run) => acc + run.avgDamageDealtPerTurn, 0) / totalRuns : 0;
-    const avgDamageTaken =
-      totalRuns > 0 ? filteredRuns.reduce((acc, run) => acc + run.avgDamageTakenPerTurn, 0) / totalRuns : 0;
-
-    const cardPickMap = new Map<string, number>();
-    filteredCardPicks.forEach(pick => {
-      cardPickMap.set(pick.name, (cardPickMap.get(pick.name) || 0) + 1);
-    });
-    const topCards = [...cardPickMap.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 8)
-      .map(([name, picks]) => ({ name, picks }));
+    const avgDamageDealt = totalRuns > 0
+      ? filteredRuns.reduce((acc, run) => acc + run.avgDamageDealtPerTurn, 0) / totalRuns
+      : 0;
+    const avgDamageTaken = totalRuns > 0
+      ? filteredRuns.reduce((acc, run) => acc + run.avgDamageTakenPerTurn, 0) / totalRuns
+      : 0;
 
     const relicPickMap = new Map<string, number>();
     filteredRelicPicks.forEach(pick => {
@@ -78,6 +94,13 @@ export function TelemetryDashboard({ onClose }: TelemetryDashboardProps) {
       .slice(0, 8)
       .map(([name, picks]) => ({ name, picks }));
 
+    const cardDominance = buildCardDominanceRows({
+      runs: filteredRuns,
+      rewardOffers: filteredRewardOffers,
+      cardPicks: filteredCardPicks,
+    });
+    const rewardMix = buildRewardChoiceRows(filteredRewardChoices);
+
     return {
       totalRuns,
       victories,
@@ -86,10 +109,16 @@ export function TelemetryDashboard({ onClose }: TelemetryDashboardProps) {
       byTeam,
       avgDamageDealt,
       avgDamageTaken,
-      topCards,
+      cardDominance: cardDominance.slice(0, 8),
+      rewardMix,
       topRelics,
+      insights: buildTelemetryInsights({
+        runs: filteredRuns,
+        cardDominance,
+        rewardMix,
+      }),
     };
-  }, [filteredRuns, filteredCardPicks, filteredRelicPicks]);
+  }, [filteredCardPicks, filteredRelicPicks, filteredRewardChoices, filteredRewardOffers, filteredRuns]);
 
   const recentRuns = useMemo(() => {
     return [...filteredRuns]
@@ -108,10 +137,7 @@ export function TelemetryDashboard({ onClose }: TelemetryDashboardProps) {
   }, [filteredRuns]);
 
   const maxDamage = useMemo(() => {
-    return Math.max(
-      1,
-      ...trendSeries.map(run => Math.max(run.avgDamageDealtPerTurn, run.avgDamageTakenPerTurn))
-    );
+    return Math.max(1, ...trendSeries.map(run => Math.max(run.avgDamageDealtPerTurn, run.avgDamageTakenPerTurn)));
   }, [trendSeries]);
 
   return (
@@ -187,6 +213,24 @@ export function TelemetryDashboard({ onClose }: TelemetryDashboardProps) {
         </section>
 
         <section className="mt-6 rounded-2xl border border-slate-600/50 bg-slate-900/35 p-4">
+          <div className="flex items-center justify-between gap-3 mb-3">
+            <h2 className="text-sm uppercase tracking-[0.2em] text-cyan-200">Lectura rapida</h2>
+            <span className="text-xs text-slate-400">Alertas automaticas sobre la muestra filtrada</span>
+          </div>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+            {summary.insights.map(insight => (
+              <div key={insight.id} className={`rounded-xl border p-3 ${insightToneClass(insight.tone)}`}>
+                <p className={`text-[11px] uppercase tracking-[0.18em] ${insightEyebrowClass(insight.tone)}`}>
+                  {insight.tone === 'warn' ? 'Revisar' : insight.tone === 'good' ? 'Estable' : 'Muestra'}
+                </p>
+                <h3 className="mt-2 text-sm font-semibold text-white">{normalizeText(insight.title)}</h3>
+                <p className="mt-1 text-sm text-slate-200">{normalizeText(insight.body)}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-6 rounded-2xl border border-slate-600/50 bg-slate-900/35 p-4">
           <h2 className="text-sm uppercase tracking-[0.2em] text-cyan-200 mb-3">Tendencia ultimas 20 runs</h2>
           <div className="space-y-2">
             {trendSeries.length === 0 && <p className="text-sm text-slate-400">Sin datos.</p>}
@@ -196,7 +240,7 @@ export function TelemetryDashboard({ onClose }: TelemetryDashboardProps) {
               return (
                 <div key={run.runId} className="rounded-lg border border-slate-700/50 bg-slate-900/45 p-2">
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="text-slate-200">{new Date(run.endedAt).toLocaleDateString()} Â· {teamLabel(run.team)} Â· A{run.ascension}</span>
+                    <span className="text-slate-200">{new Date(run.endedAt).toLocaleDateString()} · {teamLabel(run.team)} · A{run.ascension}</span>
                     <span className="text-slate-300">{run.result}</span>
                   </div>
                   <div className="h-2 bg-slate-700/70 rounded overflow-hidden mb-1">
@@ -205,7 +249,7 @@ export function TelemetryDashboard({ onClose }: TelemetryDashboardProps) {
                   <div className="h-2 bg-slate-700/70 rounded overflow-hidden">
                     <div className="h-full bg-rose-400" style={{ width: `${takenPct}%` }} />
                   </div>
-                  <div className="mt-1 text-[11px] text-slate-400">Cian: daÃ±o hecho Â· Rosa: daÃ±o recibido</div>
+                  <div className="mt-1 text-[11px] text-slate-400">Cian: dano hecho · Rosa: dano recibido</div>
                 </div>
               );
             })}
@@ -224,29 +268,56 @@ export function TelemetryDashboard({ onClose }: TelemetryDashboardProps) {
 
         <section className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-5">
           <div className="rounded-2xl border border-slate-600/50 bg-slate-900/35 p-4">
-            <h2 className="text-sm uppercase tracking-[0.2em] text-cyan-200 mb-3">Top cartas pickeadas</h2>
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <h2 className="text-sm uppercase tracking-[0.2em] text-cyan-200">Cartas dominantes</h2>
+              <span className="text-xs text-slate-400">Oferta, pickrate y winrate</span>
+            </div>
             <div className="space-y-2">
-              {summary.topCards.length === 0 && <p className="text-sm text-slate-400">Sin datos.</p>}
-              {summary.topCards.map(card => (
-                <div key={card.name} className="flex items-center justify-between rounded-lg border border-slate-700/50 bg-slate-900/45 px-3 py-2">
-                  <span className="text-sm text-white">{normalizeText(card.name)}</span>
-                  <span className="text-xs text-cyan-200">{card.picks} picks</span>
+              {summary.cardDominance.length === 0 && <p className="text-sm text-slate-400">Sin datos.</p>}
+              {summary.cardDominance.map(card => (
+                <div key={card.key} className="rounded-lg border border-slate-700/50 bg-slate-900/45 px-3 py-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm text-white">{normalizeText(card.name)}</span>
+                    <span className="text-[11px] uppercase tracking-[0.14em] text-cyan-200">{card.team} · {card.rarity}</span>
+                  </div>
+                  <div className="mt-2 grid grid-cols-4 gap-2 text-[11px] text-slate-300">
+                    <span>Ofertas: {card.offers}</span>
+                    <span>Picks: {card.picks}</span>
+                    <span>Pickrate: {pct(card.pickrate)}</span>
+                    <span>Winrate pick: {pct(card.winrateWhenPicked)}</span>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="rounded-2xl border border-slate-600/50 bg-slate-900/35 p-4">
-            <h2 className="text-sm uppercase tracking-[0.2em] text-amber-200 mb-3">Top reliquias pickeadas</h2>
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <h2 className="text-sm uppercase tracking-[0.2em] text-amber-200">Mezcla de decisiones</h2>
+              <span className="text-xs text-slate-400">Que tipo de recompensa se acaba eligiendo</span>
+            </div>
             <div className="space-y-2">
-              {summary.topRelics.length === 0 && <p className="text-sm text-slate-400">Sin datos.</p>}
-              {summary.topRelics.map(relic => (
-                <div key={relic.name} className="flex items-center justify-between rounded-lg border border-slate-700/50 bg-slate-900/45 px-3 py-2">
-                  <span className="text-sm text-white">{normalizeText(relic.name)}</span>
-                  <span className="text-xs text-amber-200">{relic.picks} picks</span>
+              {summary.rewardMix.length === 0 && <p className="text-sm text-slate-400">Sin datos.</p>}
+              {summary.rewardMix.map(row => (
+                <div key={row.kind} className="flex items-center justify-between rounded-lg border border-slate-700/50 bg-slate-900/45 px-3 py-2">
+                  <span className="text-sm text-white">{rewardLabel(row.kind)}</span>
+                  <span className="text-xs text-amber-200">{row.count} · {pct(row.share)}</span>
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section className="mt-6 rounded-2xl border border-slate-600/50 bg-slate-900/35 p-4">
+          <h2 className="text-sm uppercase tracking-[0.2em] text-amber-200 mb-3">Top reliquias pickeadas</h2>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
+            {summary.topRelics.length === 0 && <p className="text-sm text-slate-400">Sin datos.</p>}
+            {summary.topRelics.map(relic => (
+              <div key={relic.name} className="flex items-center justify-between rounded-lg border border-slate-700/50 bg-slate-900/45 px-3 py-2">
+                <span className="text-sm text-white">{normalizeText(relic.name)}</span>
+                <span className="text-xs text-amber-200">{relic.picks} picks</span>
+              </div>
+            ))}
           </div>
         </section>
 

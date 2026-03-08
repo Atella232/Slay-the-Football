@@ -1,14 +1,15 @@
-﻿import type { Relic, TeamType } from '@/types/game';
+import { createRandomId, randomChoice, shuffleWithRng } from '@/lib/rng';
+import type { Relic, TeamType } from '@/types/game';
 
 // RELIQUIAS INICIALES POR EQUIPO
 export const starterRelics: Record<string, Relic> = {
   athletic: {
     id: 'sangre_leon',
     name: 'Sangre de Leon',
-    description: 'Al final de cada partido, cura 6 HP.',
+    description: 'Al final de cada partido, cura 5 HP.',
     rarity: 'common',
     team: 'athletic',
-    effect: { type: 'heal_after_combat', value: 6, target: 'self' },
+    effect: { type: 'heal_after_combat', value: 5, target: 'self' },
   },
   barcelona: {
     id: 'la_masia',
@@ -54,9 +55,9 @@ export const commonRelics: Relic[] = [
   {
     id: 'venda_magica',
     name: 'Venda Magica',
-    description: 'Al final de cada partido, cura 2 HP.',
+    description: 'Al final de cada partido, cura 1 HP.',
     rarity: 'common',
-    effect: { type: 'heal_after_combat', value: 2, target: 'self' },
+    effect: { type: 'heal_after_combat', value: 1, target: 'self' },
   },
   {
     id: 'pito_arbitro',
@@ -329,33 +330,23 @@ export function getRandomRelic(
     pool = filterRelicsByTeam(allRelics.filter(r => r.rarity !== 'boss'), team);
   }
 
-  const selectedRelic = pool[Math.floor(Math.random() * pool.length)];
-  return { ...selectedRelic, id: `${selectedRelic.id}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}` };
+  const selectedRelic = randomChoice(pool);
+  return { ...selectedRelic, id: createRandomId(selectedRelic.id) };
 }
 
 export function getRandomRelicsForShop(team: TeamType, existing: string[], count: number): Relic[] {
   const pool = filterRelicsByTeam(allRelics.filter(r => r.rarity !== 'boss'), team)
     .filter(relic => !existing.some(id => id.startsWith(relic.id)));
-  const shuffled = [...pool];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled.slice(0, count).map(relic => ({
+  return shuffleWithRng(pool).slice(0, count).map(relic => ({
     ...relic,
-    id: `${relic.id}_shop_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    id: createRandomId(`${relic.id}_shop`),
   }));
 }
 
 export function getRandomBossRelics(count: number, exclude: string[] = [], team?: TeamType): Relic[] {
   const pool = filterRelicsByTeam(bossRelics, team).filter(relic => !exclude.some(id => id.startsWith(relic.id)));
-  const shuffled = [...pool];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled.slice(0, count).map(relic => ({
+  return shuffleWithRng(pool).slice(0, count).map(relic => ({
     ...relic,
-    id: `${relic.id}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    id: createRandomId(relic.id),
   }));
 }

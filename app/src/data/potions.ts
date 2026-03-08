@@ -1,3 +1,4 @@
+import { createRandomId, randomChoice } from '@/lib/rng';
 import type { Potion } from '@/types/game';
 
 export const allPotions: Potion[] = [
@@ -40,9 +41,9 @@ export const allPotions: Potion[] = [
 ];
 
 export function getRandomPotion(): Potion {
-  const potion = allPotions[Math.floor(Math.random() * allPotions.length)];
+  const potion = randomChoice(allPotions);
   return {
     ...potion,
-    id: `${potion.id}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    id: createRandomId(potion.id),
   };
 }

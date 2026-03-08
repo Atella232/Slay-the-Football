@@ -1,4 +1,4 @@
-// Tipos principales del juego Climb the League
+﻿// Tipos principales del juego Climb the League
 
 export type TeamType = 'athletic' | 'barcelona' | 'madrid';
 export type CardType = 'attack' | 'skill' | 'power';
@@ -61,6 +61,8 @@ export interface Enemy {
   debuffs: Debuff[];
   isElite?: boolean;
   isBoss?: boolean;
+  aiPattern?: 'keeper_wall' | 'captain_rally' | 'poacher_burst' | 'champion_press' | 'leader_command' | 'european_machine' | 'continental_emperor';
+  aiStep?: number;
   didAttackLastTurn?: boolean;
 }
 
@@ -104,17 +106,17 @@ export interface Player {
   debuffs: Debuff[];
   nextCardFree?: boolean;
   cardsPlayedThisTurn?: number;
-  thorns?: number; // Daño reflejado cuando atacado
-  nextSkillFree?: boolean; // Próxima skill cuesta 0
-  nextAttackFree?: boolean; // Próximo ataque cuesta 0
-  nextAttackDouble?: boolean; // Próxima carta de ataque se juega dos veces
+  thorns?: number; // Dano reflejado cuando atacado
+  nextSkillFree?: boolean; // Proxima skill cuesta 0
+  nextAttackFree?: boolean; // Proximo ataque cuesta 0
+  nextAttackDouble?: boolean; // Proxima carta de ataque se juega dos veces
   drawPerTurn?: number; // Cartas extra por turno (de powers)
   blockPerTurn?: number; // Bloqueo al inicio del turno (barricade)
-  relicCounters?: Record<string, number>; // Contadores para reliquias (ej: Penalti, Campeón)
+  relicCounters?: Record<string, number>; // Contadores para reliquias
   attacksPlayedThisTurn?: number; // Contador de ataques jugados este turno
   blockOnExhaust?: number; // Bloqueo por carta agotada
   drawOnExhaust?: number; // Robo por carta agotada
-  pendingRestEnergy?: number; // Energía extra para el próximo combate tras descansar
+  pendingRestEnergy?: number; // Energia extra para el proximo combate tras descansar
   potions: Potion[];
   maxPotionSlots: number;
   garra?: number;
@@ -143,6 +145,14 @@ export interface DamageEffect {
   targetIndex?: number;
 }
 
+export type CombatLogTone = 'neutral' | 'good' | 'warn' | 'bad';
+
+export interface CombatLogEntry {
+  id: string;
+  text: string;
+  tone: CombatLogTone;
+}
+
 export interface GameState {
   player: Player;
   map: Map;
@@ -156,8 +166,11 @@ export interface GameState {
   rewardType: 'combat' | 'boss' | 'rest' | 'treasure' | 'shop' | 'event' | null;
   currentEvent?: GameEvent | null;
   damageEffects: DamageEffect[];
+  combatLog: CombatLogEntry[];
   unlockedTeams: TeamType[];
   ascension: number;
+  currentSeed: number | null;
+  nextSeed: number | null;
 }
 
 export interface Potion {
@@ -174,24 +187,32 @@ export interface ShopItem {
 }
 
 // EVENTOS
+export interface EventEffect {
+  type: 'gold' | 'health' | 'card' | 'relic' | 'remove_card' | 'transform_card' | 'damage' | 'heal' | 'max_hp';
+  value?: number;
+  target?: string;
+  description?: string;
+  costGold?: number;
+  bonusGold?: number;
+  removeCard?: boolean;
+}
+
 export interface EventOption {
   text: string;
-  effect?: {
-    type: 'gold' | 'health' | 'card' | 'relic' | 'remove_card' | 'transform_card' | 'damage' | 'heal' | 'max_hp';
-    value?: number;
-    target?: string; // id de carta/reliquia o 'random'
-    description?: string; // Descripción del efecto para tooltip
-  };
+  effect?: EventEffect;
   condition?: {
     type: 'gold_min' | 'hp_min' | 'card_has' | 'relic_has';
     value: number | string;
   };
 }
-
 export interface GameEvent {
   id: string;
   title: string;
   description: string;
-  image?: string; // Emojis por ahora
+  image?: string;
   options: EventOption[];
 }
+
+
+
+

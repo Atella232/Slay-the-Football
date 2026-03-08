@@ -2,11 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Enemy } from '@/types/game';
 import { athleticCards, barcelonaCards, madridCards } from '@/data/cards';
 import { commonRelics, rareRelics, getRandomRelic } from '@/data/relics';
-import { generateMap, useGameStore } from './gameStore';
+import { generateMap } from '@/lib/map/mapFlow';
+import { useGameStore } from './gameStore';
 
 function makeEnemy(hp: number = 100): Enemy {
   return {
-    id: `enemy_${Date.now()}`,
+    id: `enemy_${hp}`,
     name: 'Dummy',
     hp,
     maxHp: hp,
@@ -105,6 +106,20 @@ describe('gameStore core mechanics', () => {
     expect(useGameStore.getState().player.pendingRestEnergy).toBe(0);
   });
 
+  it('uses the reduced hostal heal baseline after the balance pass', () => {
+    useGameStore.getState().startGame('athletic');
+    useGameStore.setState(state => ({
+      ...state,
+      player: {
+        ...state.player,
+        hp: 40,
+      },
+    }));
+
+    useGameStore.getState().restAtSite();
+    expect(useGameStore.getState().player.hp).toBe(62);
+  });
+
   it('shows boss reward and advances act after choosing boss relic', () => {
     useGameStore.getState().startGame('barcelona');
 
@@ -134,7 +149,7 @@ describe('gameStore core mechanics', () => {
     expect(afterAdvance.map.act).toBe(2);
     expect(afterAdvance.showReward).toBe(false);
     expect(afterAdvance.rewardType).toBe(null);
-    expect(afterAdvance.player.hp).toBe(62);
+    expect(afterAdvance.player.hp).toBe(58);
   });
 
   it('advances to act 4 after boss reward in act 3', () => {
@@ -181,6 +196,60 @@ describe('gameStore core mechanics', () => {
     const afterKill = useGameStore.getState();
     expect(afterKill.victory).toBe(true);
     expect(afterKill.showReward).toBe(false);
+  });
+
+  it('applies Athletic sustain only once after winning a combat', () => {
+    useGameStore.getState().startGame('athletic');
+
+    useGameStore.setState(state => ({
+      ...state,
+      inCombat: true,
+      map: {
+        act: 1,
+        currentRoomId: 'monster_heal_test',
+        rooms: [{ id: 'monster_heal_test', type: 'monster', x: 0, y: 0, connections: [] }],
+      },
+      enemies: [makeEnemy(1)],
+      player: {
+        ...state.player,
+        hp: 50,
+      },
+    }));
+
+    useGameStore.getState().damageEnemy(0, 10);
+    const state = useGameStore.getState();
+    expect(state.player.hp).toBe(55);
+    expect(state.showReward).toBe(true);
+  });
+  it('resets elite block between rounds instead of stacking it forever', () => {
+    useGameStore.getState().startGame('athletic');
+
+    useGameStore.setState(state => ({
+      ...state,
+      inCombat: true,
+      turn: 1,
+      enemies: [
+        {
+          id: 'portero_titular_test',
+          name: 'Portero Titular',
+          hp: 90,
+          maxHp: 90,
+          block: 12,
+          intent: { type: 'defend', value: 15, description: 'Defensa elite' },
+          buffs: [],
+          debuffs: [],
+          isElite: true,
+          aiPattern: 'keeper_wall',
+          aiStep: 0,
+        },
+      ],
+    }));
+
+    useGameStore.getState().endTurn();
+    expect(useGameStore.getState().enemies[0].block).toBe(15);
+
+    useGameStore.getState().endTurn();
+    expect(useGameStore.getState().enemies[0].block).toBe(0);
   });
 
   it('adds a generated card to hand when exhausting with Leyenda del Club', () => {
@@ -319,7 +388,7 @@ describe('gameStore core mechanics', () => {
 
     useGameStore.getState().consumePotion(0, 0);
     const state = useGameStore.getState();
-    expect(state.player.hp).toBe(51);
+    expect(state.player.hp).toBe(52);
   });
 
   it('resolves unknown rooms into a concrete room type on selection', () => {
@@ -518,4 +587,130 @@ describe('gameStore core mechanics', () => {
     const after = useGameStore.getState().player.maxHp;
     expect(after).toBe(before - 10);
   });
+  it('reuses the configured seed to generate the same starting map', () => {
+    useGameStore.getState().setNextSeed(424242);
+    useGameStore.getState().startGame('athletic');
+
+    const firstRun = useGameStore.getState();
+    const firstMap = firstRun.map.rooms.map(room => ({
+      id: room.id,
+      type: room.type,
+      x: room.x,
+      y: room.y,
+      connections: [...room.connections],
+    }));
+
+    useGameStore.getState().resetGame();
+    useGameStore.getState().setNextSeed(424242);
+    useGameStore.getState().startGame('athletic');
+
+    const secondRun = useGameStore.getState();
+    const secondMap = secondRun.map.rooms.map(room => ({
+      id: room.id,
+      type: room.type,
+      x: room.x,
+      y: room.y,
+      connections: [...room.connections],
+    }));
+
+    expect(firstRun.currentSeed).toBe(424242);
+    expect(secondRun.currentSeed).toBe(424242);
+    expect(firstMap).toEqual(secondMap);
+  });
+  it('records combat log entries for card plays and potions', () => {
+    useGameStore.getState().startGame('athletic');
+    const aupa = athleticCards.find(c => c.id === 'aupa_athletic');
+    if (!aupa) throw new Error('Card not found');
+
+    useGameStore.setState(state => ({
+      ...state,
+      inCombat: true,
+      enemies: [makeEnemy(100)],
+      player: {
+        ...state.player,
+        energy: 3,
+        hand: [{ ...aupa, id: 'log_aupa' }],
+        discard: [],
+        exhaust: [],
+      },
+    }));
+
+    useGameStore.getState().playCard(0, 0);
+    useGameStore.getState().addPotion({
+      id: 'log_block_potion',
+      name: 'Potion Block',
+      description: 'Block test',
+      effect: { type: 'block', value: 7, target: 'self' },
+    });
+    useGameStore.getState().consumePotion(0, 0);
+
+    const logLines = useGameStore.getState().combatLog.map(entry => entry.text);
+    expect(logLines.length).toBeGreaterThan(0);
+    expect(logLines.some(line => line.includes('Juegas'))).toBe(true);
+    expect(logLines.some(line => line.includes('de dano'))).toBe(true);
+    expect(logLines.some(line => line.includes('Usas Potion Block'))).toBe(true);
+    expect(logLines.some(line => line.toLowerCase().includes('bloqueo'))).toBe(true);
+  });
+
+  it('records end turn damage and next intent in combat log', () => {
+    useGameStore.getState().startGame('athletic');
+
+    useGameStore.setState(state => ({
+      ...state,
+      inCombat: true,
+      enemies: [makeEnemy(100)],
+      player: {
+        ...state.player,
+        block: 5,
+        energy: 3,
+        hand: [],
+      },
+      turn: 1,
+    }));
+
+    useGameStore.getState().endTurn();
+
+    const logLines = useGameStore.getState().combatLog.map(entry => entry.text);
+    expect(logLines.length).toBeGreaterThan(0);
+    expect(logLines.some(line => line.includes('Bloqueas'))).toBe(true);
+    expect(logLines.some(line => line.includes('prepara'))).toBe(true);
+  });
+
+  it('persists the active run snapshot needed for continue flow', () => {
+    useGameStore.getState().startGame('athletic');
+    useGameStore.setState(state => ({
+      ...state,
+      showReward: true,
+      rewardType: 'combat',
+      turn: 4,
+      player: {
+        ...state.player,
+        hp: 61,
+        gold: 37,
+      },
+      map: {
+        ...state.map,
+        act: 2,
+        currentRoomId: 'room_2_2',
+      },
+    }));
+
+    const persisted = JSON.parse(localStorage.getItem('climb-the-league') || '{}') as { state?: Record<string, unknown> };
+
+    expect(persisted.state?.gameStarted).toBe(true);
+    expect(persisted.state?.showReward).toBe(true);
+    expect(persisted.state?.turn).toBe(4);
+    expect((persisted.state?.player as { hp: number; gold: number }).hp).toBe(61);
+    expect((persisted.state?.map as { act: number; currentRoomId: string }).act).toBe(2);
+    expect((persisted.state?.telemetryRun as { runId: string }).runId.startsWith('run_')).toBe(true);
+  });
 });
+
+
+
+
+
+
+
+
+

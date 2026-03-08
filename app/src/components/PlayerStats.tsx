@@ -1,58 +1,66 @@
-﻿import { useGameStore } from '@/store/gameStore';
+import { Shield, Trophy, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+import { useGameStore } from '@/store/gameStore';
+
+function getTeamName(team: string): string {
+  switch (team) {
+    case 'athletic':
+      return 'Athletic Club';
+    case 'barcelona':
+      return 'FC Barcelona';
+    case 'madrid':
+      return 'Real Madrid';
+    default:
+      return 'Equipo';
+  }
+}
+
+function getTeamColors(team: string): string {
+  switch (team) {
+    case 'athletic':
+      return 'from-red-700 to-white';
+    case 'barcelona':
+      return 'from-blue-900 to-red-700';
+    case 'madrid':
+      return 'from-white to-yellow-400';
+    default:
+      return 'from-gray-700 to-gray-500';
+  }
+}
+
+function getTeamBadge(team: string): string {
+  switch (team) {
+    case 'athletic':
+      return 'ATH';
+    case 'barcelona':
+      return 'BAR';
+    case 'madrid':
+      return 'RMA';
+    default:
+      return 'CLB';
+  }
+}
 
 export function PlayerStats() {
   const player = useGameStore(state => state.player);
-  const hpPercent = (player.hp / player.maxHp) * 100;
-
-  const getTeamName = () => {
-    switch (player.team) {
-      case 'athletic':
-        return 'Athletic Club';
-      case 'barcelona':
-        return 'FC Barcelona';
-      case 'madrid':
-        return 'Real Madrid';
-      default:
-        return 'Equipo';
-    }
-  };
-
-  const getTeamColors = () => {
-    switch (player.team) {
-      case 'athletic':
-        return 'from-red-700 to-white';
-      case 'barcelona':
-        return 'from-blue-900 to-red-700';
-      case 'madrid':
-        return 'from-white to-yellow-400';
-      default:
-        return 'from-gray-700 to-gray-500';
-    }
-  };
+  const hpPercent = Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100));
+  const teamColors = getTeamColors(player.team);
 
   return (
     <div className="flex flex-col items-center">
-      {/* Nombre del equipo */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${getTeamColors()} mb-4`}
+        className={`text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${teamColors} mb-4`}
       >
-        {getTeamName()}
+        {getTeamName(player.team)}
       </motion.div>
 
-      {/* Sprite del equipo */}
-      <div className={`
-        w-32 h-32 rounded-full flex items-center justify-center text-6xl mb-4
-        bg-gradient-to-br ${getTeamColors()} shadow-lg
-      `}>
-        {player.team === 'athletic' && 'ðŸ¦'}
-        {player.team === 'barcelona' && 'ðŸ”µ'}
-        {player.team === 'madrid' && 'ðŸ‘‘'}
+      <div className={`w-32 h-32 rounded-full flex items-center justify-center text-3xl font-black tracking-[0.24em] mb-4 bg-gradient-to-br ${teamColors} text-slate-950 shadow-lg`}>
+        {getTeamBadge(player.team)}
       </div>
 
-      {/* Barra de HP */}
       <div className="w-48 h-6 bg-gray-700 rounded-full overflow-hidden mb-2 relative">
         <motion.div
           initial={{ width: 0 }}
@@ -66,24 +74,20 @@ export function PlayerStats() {
         </div>
       </div>
 
-      {/* Bloqueo y Energía */}
       <div className="flex gap-4 mt-2">
-        {/* Bloqueo */}
         <div className="flex items-center gap-2 bg-blue-900/50 px-3 py-1 rounded-full">
-          <span className="text-blue-400 text-xl">ðŸ›¡ï¸</span>
+          <Shield className="h-4 w-4 text-blue-300" />
           <span className="text-white font-bold">{player.block}</span>
         </div>
 
-        {/* Energía */}
         <div className="flex items-center gap-2 bg-yellow-900/50 px-3 py-1 rounded-full">
-          <span className="text-yellow-400 text-xl">âš¡</span>
+          <Zap className="h-4 w-4 text-yellow-300" />
           <span className="text-white font-bold">{player.energy}/{player.maxEnergy}</span>
         </div>
       </div>
 
-      {/* Oro */}
       <div className="flex items-center gap-2 bg-yellow-700/50 px-3 py-1 rounded-full mt-2">
-        <span className="text-yellow-300 text-xl">ðŸ’°</span>
+        <Trophy className="h-4 w-4 text-yellow-200" />
         <span className="text-white font-bold">{player.gold}</span>
       </div>
 
@@ -93,32 +97,30 @@ export function PlayerStats() {
         <div className="bg-amber-900/40 text-amber-200 px-2 py-1 rounded">Momentum: {player.momentum || 0}</div>
       </div>
 
-      {/* Buffs/Debuffs */}
       {(player.buffs.length > 0 || player.debuffs.length > 0) && (
         <div className="flex gap-1 mt-3 flex-wrap justify-center max-w-48">
-          {player.buffs.map((buff, i) => (
-            <span key={i} className="text-xs bg-green-700 text-white px-2 py-1 rounded">
+          {player.buffs.map((buff, index) => (
+            <span key={`${buff.id}_${index}`} className="text-xs bg-green-700 text-white px-2 py-1 rounded">
               {buff.name} {buff.value}
             </span>
           ))}
-          {player.debuffs.map((debuff, i) => (
-            <span key={i} className="text-xs bg-red-700 text-white px-2 py-1 rounded">
+          {player.debuffs.map((debuff, index) => (
+            <span key={`${debuff.id}_${index}`} className="text-xs bg-red-700 text-white px-2 py-1 rounded">
               {debuff.name} {debuff.value}
             </span>
           ))}
         </div>
       )}
 
-      {/* Reliquias */}
       {player.relics.length > 0 && (
         <div className="flex gap-1 mt-3 flex-wrap justify-center max-w-64">
-          {player.relics.map((relic, i) => (
+          {player.relics.map((relic, index) => (
             <div
-              key={i}
+              key={`${relic.id}_${index}`}
               title={relic.description}
-              className="w-8 h-8 rounded-full bg-yellow-600 flex items-center justify-center text-xs cursor-help hover:bg-yellow-500 transition-colors"
+              className="min-w-10 h-8 rounded-full bg-yellow-600 px-2 flex items-center justify-center text-[10px] font-semibold tracking-wide text-slate-950 cursor-help hover:bg-yellow-500 transition-colors"
             >
-              ðŸ†
+              REL
             </div>
           ))}
         </div>
