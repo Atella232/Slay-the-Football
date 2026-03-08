@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { getIntentEntry, getIntentPresentation, getStatusEntry } from '@/lib/glossary';
+import { getEnemyArtSrc } from '@/lib/enemyArt';
 import { normalizeText } from '@/lib/text';
 import type { Enemy as EnemyType } from '@/types/game';
 
@@ -22,6 +23,7 @@ export function EnemyComponent({ enemy, isTarget = false, onClick }: EnemyProps)
   const hpPercent = (enemy.hp / enemy.maxHp) * 100;
   const intentPresentation = getIntentPresentation(enemy);
   const intentEntry = getIntentEntry(enemy.intent.type);
+  const enemyArtSrc = getEnemyArtSrc(enemy.id);
 
   return (
     <motion.button
@@ -52,8 +54,15 @@ export function EnemyComponent({ enemy, isTarget = false, onClick }: EnemyProps)
       </div>
 
       <div className="mt-3 mb-2 flex items-center justify-between gap-3">
-        <h3 className="text-sm font-bold text-white leading-tight">{normalizeText(enemy.name)}</h3>
+        <h3 className="text-sm font-bold leading-tight text-white">{normalizeText(enemy.name)}</h3>
       </div>
+
+      {enemyArtSrc && (
+        <div className="relative mb-3 h-24 overflow-hidden rounded-xl border border-white/10 bg-slate-900 shadow-[inset_0_0_0_1px_rgba(15,23,42,0.35)]">
+          <img alt={`${normalizeText(enemy.name)} art`} src={enemyArtSrc} className="h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-slate-900/15" />
+        </div>
+      )}
 
       <div className={`rounded-xl border px-3 py-2 ${getSeverityClass(intentPresentation.severity)}`}>
         <p className="text-[11px] uppercase tracking-[0.18em] opacity-80">Proxima accion</p>
@@ -61,7 +70,7 @@ export function EnemyComponent({ enemy, isTarget = false, onClick }: EnemyProps)
         <p className="mt-1 text-[11px] opacity-90">{normalizeText(intentPresentation.detail)}</p>
       </div>
 
-      <div className="mt-3 h-3 rounded-full bg-slate-700/80 overflow-hidden border border-white/10">
+      <div className="mt-3 h-3 overflow-hidden rounded-full border border-white/10 bg-slate-700/80">
         <div
           className={`h-full transition-all duration-300 ${hpPercent > 55 ? 'bg-emerald-400' : hpPercent > 30 ? 'bg-amber-400' : 'bg-rose-400'}`}
           style={{ width: `${hpPercent}%` }}
@@ -80,7 +89,7 @@ export function EnemyComponent({ enemy, isTarget = false, onClick }: EnemyProps)
             return (
               <Tooltip key={`${buff.id}_${index}`}>
                 <TooltipTrigger asChild>
-                  <span className="rounded px-1.5 py-0.5 text-[10px] bg-emerald-900/60 border border-emerald-400/35 text-emerald-100">
+                  <span className="rounded border border-emerald-400/35 bg-emerald-900/60 px-1.5 py-0.5 text-[10px] text-emerald-100">
                     {normalizeText(buff.name)} {buff.value}
                   </span>
                 </TooltipTrigger>
@@ -96,7 +105,7 @@ export function EnemyComponent({ enemy, isTarget = false, onClick }: EnemyProps)
             return (
               <Tooltip key={`${debuff.id}_${index}`}>
                 <TooltipTrigger asChild>
-                  <span className="rounded px-1.5 py-0.5 text-[10px] bg-rose-900/60 border border-rose-400/35 text-rose-100">
+                  <span className="rounded border border-rose-400/35 bg-rose-900/60 px-1.5 py-0.5 text-[10px] text-rose-100">
                     {normalizeText(debuff.name)} {debuff.value}
                   </span>
                 </TooltipTrigger>

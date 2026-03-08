@@ -1,4 +1,4 @@
-﻿# Art Illustration Plan
+# Art Illustration Plan
 
 Fecha: 2026-03-08
 
@@ -10,7 +10,7 @@ No se busca copiar cartas ni personajes concretos de MTG. Se busca trasladar su 
 ## Principios de direccion de arte
 - Estilo: pintura digital premium, semi-realista, dramatica, con anatomia creible y energia cinematografica.
 - Tema: futbol como combate tactico y heroico, no como foto deportiva ni caricatura.
-- Composicion: vertical, foco claro, una accion principal por ilustracion, silueta legible incluso a tamano reducido.
+- Composicion: horizontal panoramica para la franja superior de la carta, foco claro, una accion principal por ilustracion, silueta legible incluso a tamano reducido.
 - Iluminacion: contrastada, atmosferica, con un punto de luz dominante y volumen fuerte en personaje/accion.
 - Fondo: sugerente pero secundario; estadio, tunel, area, cesped, focos, grada o tormenta visual sin saturar la escena.
 - Narrativa: cada arte debe contar el efecto de la carta o la fantasia del enemigo en una sola imagen.
@@ -137,8 +137,8 @@ Para cada carta/enemigo:
 - Guardar prompts finales junto al asset elegido.
 
 ## Especificacion tecnica recomendada
-- Ratio objetivo para cartas: vertical 2:3.
-- Tamano de generacion recomendado: 1024x1536 o equivalente vertical.
+- Ratio objetivo para cartas: horizontal panoramico, pensado para el panel superior de la carta.
+- Tamano de generacion recomendado: horizontal tipo 3:2 o cercano a 2:1, segun lo que mejor recorte sobre el art box actual.
 - Enemigos: mismo ratio vertical para reutilizar en UI y retratos.
 - Fondo: opaco durante generacion; si hace falta, el recorte o composicion vendra despues.
 - Export final: PNG.

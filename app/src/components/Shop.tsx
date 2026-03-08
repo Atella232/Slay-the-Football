@@ -24,7 +24,7 @@ function rollShopCost(baseCost: number, priceMultiplier: number): number {
 }
 
 function createShopCard(card: Card, suffix: string, priceMultiplier: number): ShopItem<Card> {
-  const baseCost = card.rarity === 'rare' ? 140 : card.rarity === 'uncommon' ? 70 : 45;
+  const baseCost = card.rarity === 'legendary' ? 220 : card.rarity === 'rare' ? 140 : card.rarity === 'uncommon' ? 70 : 45;
   return {
     item: { ...card, id: createRandomId(`${card.id}_shop_${suffix}`) },
     cost: rollShopCost(baseCost, priceMultiplier),
@@ -307,3 +307,4 @@ export function Shop() {
     </div>
   );
 }
+

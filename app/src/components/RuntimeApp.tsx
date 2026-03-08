@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect } from 'react';
 
+import { ArtGallery } from '@/components/ArtGallery';
 import { Combat } from '@/components/Combat';
 import { EventRoom } from '@/components/EventRoom';
 import { GameOver } from '@/components/GameOver';
@@ -151,6 +152,10 @@ export function RuntimeApp({ initialConfig, onExitToMenu }: RuntimeAppProps) {
     }
   }, [gameStarted, onExitToMenu]);
 
+  if (initialConfig.debugRoom === 'art_gallery') {
+    return <ArtGallery initialTeam={initialConfig.team} />;
+  }
+
   if (gameOver || victory) {
     return <GameOver />;
   }
@@ -169,3 +174,4 @@ export function RuntimeApp({ initialConfig, onExitToMenu }: RuntimeAppProps) {
 
   return <MapComponent />;
 }
+

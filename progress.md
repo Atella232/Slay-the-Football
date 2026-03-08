@@ -271,3 +271,33 @@ Fecha de ultima actualizacion: 2026-03-08
 - Se detectan 71 entradas de cartas (68 nombres unicos) y 23 enemigos unicos, para un total aproximado de 91 ilustraciones si se cubre todo el set.
 - Se deja un lote piloto de 9 assets para fijar estilo antes de escalar: `Golpeo`, `Cobertura`, `Todo o Nada`, `Muro Rojiblanco`, `Tiki-Taka`, `Galactico`, `Portero Titular`, `Capitan del Equipo` y `Campeon de Europa`.
 - Documento de referencia creado: `art-illustration-plan.md`.
+
+## Update 2026-03-08 - Gemini pilot smoke
+- `GEMINI_API_KEY` ya es visible en la sesion actual.
+- Se valida un primer smoke real contra `gemini-3.1-flash-image-preview` con una ilustracion de prueba para `Golpeo`.
+- Prompt base del piloto guardado en `app/output/imagegen/prompts/pilot-prompts.md`.
+- Artefacto generado: `app/output/imagegen/cards/pilot/golpeo/golpeo-test.png`.
+- Respuesta cruda de la API guardada en `app/output/imagegen/cards/pilot/golpeo/response.json`.
+- Siguiente paso: extender el piloto al resto de los 9 assets o refinar el prompt base si se quiere mas atmosfera, mas fantasia o mas identidad de club.
+- Cambio de direccion para ilustraciones: las cartas no usaran splash vertical completa; el arte debe ser horizontal tipo MTG para ocupar solo la franja superior, dejando el texto abajo como ahora.
+
+## Update 2026-03-08 - Golpeo art horizontal
+- Se rehace `Golpeo` como ilustracion horizontal panoramica pensada para el art box superior de la carta, no como splash vertical.
+- Asset generado con Gemini en `app/public/card-art/golpeo-horizontal.png`.
+- Prompt y respuesta del smoke guardados en `app/output/imagegen/prompts/pilot-prompts.md` y `app/output/imagegen/cards/pilot/golpeo-horizontal/response.json`.
+- `Card.tsx` ya soporta arte por carta via `app/src/lib/cardArt.ts` y `Golpeo` (neutral y Athletic) usa el nuevo art box.
+- Validacion tecnica: `npm run lint`, `npm run test` y `npm run build` OK.
+- Validacion visual parcial: el asset se reviso y el cableado en runtime esta activo; la captura automatizada del navegador no saco una imagen final limpia de la carta completa por problemas de foco/crop de ventana en esta maquina.
+
+- 2026-03-08: Carta rehecha otra vez para evitar solapes en cabecera. La rareza sale del badge y pasa al borde: comun negro, uncommon plateado y rare dorado. Validado con lint/build y captura runtime en app/output/web-game/card-golpeo-rarity-border.png.
+
+- 2026-03-08: Soporte anadido para rareza legendary con borde rojo en Card.tsx y precio de tienda preparado. rewardTable actualizado con peso 0 para legendary por ahora.
+- 2026-03-08: Generadas 8 ilustraciones horizontales del piloto con Gemini y guardadas en app/public/card-art y app/public/enemy-art, con respuesta cruda en app/output/imagegen/. Integradas en runtime Cobertura, Todo o Nada, Muro Rojiblanco, Tiki-Taka, Galactico y retratos de Portero Titular, Capitan del Equipo y Campeon de Europa en Enemy.tsx.
+- 2026-03-08: Validacion OK con npm run lint, npm run build y npm run test. Captura runtime de Cobertura en app/output/web-game/card-cobertura-art.png.
+
+- 2026-03-08: Batch 2 de cartas generado con Gemini: Entrada Dura, Lectura de Partido, Cambio de Banda, Pase Seguro, Falta Tactica, Toque de Balon y Contraataque. Integradas en cardArt.ts y validadas con lint/build/test.
+- 2026-03-08: Detectado que Barca y Madrid usan ids genericos strike_/defend_ en mano inicial. getCardArtSrc se rehace para resolver tambien por team y nombre, no solo por id.
+- 2026-03-08: Mini batch extra para basicas visibles de Barca/Madrid: Pase Corto, Posicionamiento, Disparo y Marcaje. Se regeneran varias de ellas por derivas del modelo (futbol americano, logos o marcos incrustados) con prompts soccer-only y versionado de archivo v2 para romper cache del navegador.
+- 2026-03-08: Capturas utiles de esta tanda en app/output/web-game/card-entrada-dura-art.png, app/output/web-game/card-toque-balon-art.png, app/output/web-game/card-pase-corto-art-v3.png y app/output/web-game/card-disparo-art-v2.png. Siguiente mejora recomendada: crear una vista debug de galeria de cartas para revisar arte a tamano grande y acelerar curacion/regeneracion.
+
+- 2026-03-08: Añadida galeria debug de arte en app/src/components/ArtGallery.tsx y conectada en RuntimeApp con debugRoom=art_gallery. Muestra ilustracion grande + carta/enemigo en marco real, con filtros por equipo y estado de arte. Captura en app/output/web-game/art-gallery-debug.png.

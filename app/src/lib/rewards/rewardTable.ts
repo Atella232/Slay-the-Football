@@ -35,7 +35,7 @@ const rewardTableByAct: Record<number, RewardTableEntry> = {
   1: {
     act: 1,
     cardChoices: 3,
-    cardWeights: { common: 72, uncommon: 23, rare: 5 },
+    cardWeights: { common: 72, uncommon: 23, rare: 5, legendary: 0 },
     relicWeights: { common: 78, uncommon: 22, rare: 0 },
     victoryGold: { min: 14, max: 20, eliteBonus: 14, bossBonus: 60 },
     rewardGold: { min: 12, max: 18 },
@@ -45,7 +45,7 @@ const rewardTableByAct: Record<number, RewardTableEntry> = {
   2: {
     act: 2,
     cardChoices: 3,
-    cardWeights: { common: 60, uncommon: 30, rare: 10 },
+    cardWeights: { common: 60, uncommon: 30, rare: 10, legendary: 0 },
     relicWeights: { common: 60, uncommon: 30, rare: 10 },
     victoryGold: { min: 20, max: 29, eliteBonus: 16, bossBonus: 72 },
     rewardGold: { min: 17, max: 25 },
@@ -55,7 +55,7 @@ const rewardTableByAct: Record<number, RewardTableEntry> = {
   3: {
     act: 3,
     cardChoices: 3,
-    cardWeights: { common: 50, uncommon: 35, rare: 15 },
+    cardWeights: { common: 50, uncommon: 35, rare: 15, legendary: 0 },
     relicWeights: { common: 45, uncommon: 35, rare: 20 },
     victoryGold: { min: 26, max: 37, eliteBonus: 18, bossBonus: 84 },
     rewardGold: { min: 23, max: 33 },
@@ -65,7 +65,7 @@ const rewardTableByAct: Record<number, RewardTableEntry> = {
   4: {
     act: 4,
     cardChoices: 3,
-    cardWeights: { common: 42, uncommon: 38, rare: 20 },
+    cardWeights: { common: 42, uncommon: 38, rare: 20, legendary: 0 },
     relicWeights: { common: 35, uncommon: 40, rare: 25 },
     victoryGold: { min: 32, max: 45, eliteBonus: 20, bossBonus: 96 },
     rewardGold: { min: 29, max: 40 },
@@ -178,3 +178,4 @@ export function createCombatRewardOffer(params: {
     goldReward,
   };
 }
+

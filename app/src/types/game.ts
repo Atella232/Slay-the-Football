@@ -1,8 +1,8 @@
-﻿// Tipos principales del juego Climb the League
+// Tipos principales del juego Climb the League
 
 export type TeamType = 'athletic' | 'barcelona' | 'madrid';
 export type CardType = 'attack' | 'skill' | 'power';
-export type CardRarity = 'common' | 'uncommon' | 'rare';
+export type CardRarity = 'common' | 'uncommon' | 'rare' | 'legendary';
 export type RelicRarity = 'common' | 'uncommon' | 'rare' | 'boss';
 export type RoomType = 'monster' | 'elite' | 'rest' | 'event' | 'treasure' | 'shop' | 'boss' | 'unknown';
 
@@ -212,6 +212,7 @@ export interface GameEvent {
   image?: string;
   options: EventOption[];
 }
+
 
 
 
