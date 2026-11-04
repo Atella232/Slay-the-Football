@@ -43,7 +43,7 @@ export default defineConfig([
     rules: engineBans,
   },
   {
-    files: ['src/main.tsx'],
+    files: ['src/main.tsx', 'src/ui/**/*.tsx'],
     rules: { 'react-refresh/only-export-components': 'off' },
   },
   {

@@ -1,15 +1,15 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { installContent } from './content/index'
+import './ui/styles.css'
+import { App } from './ui/App'
+import { installDebugHooks } from './ui/debugHooks'
 
 installContent()
-
-function Placeholder() {
-  return <div style={{ font: '16px system-ui', padding: 24 }}>Slay the Football</div>
-}
+if (new URLSearchParams(location.search).has('debug') || import.meta.env.DEV) installDebugHooks()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Placeholder />
+    <App />
   </StrictMode>,
 )
