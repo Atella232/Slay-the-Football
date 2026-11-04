@@ -13,7 +13,7 @@ export interface SimResult {
   actions: number
   stats: RunState['stats']
   errors: string[]
-  matchLog: { rival: string; tier: string; result: string; turns: number; f: number; a: number; prorroga: boolean; pens: boolean; formaLost: number }[]
+  matchLog: { rival: string; act: number; tier: string; result: string; turns: number; f: number; a: number; prorroga: boolean; pens: boolean; formaLost: number }[]
   final: RunState
 }
 
@@ -41,7 +41,7 @@ export function simulateRun(opts: { seed: string; club: ClubId; exig?: number; b
     state = res.state
     if (before.k === 'match' && before.m.phase === 'ended' && a.t === 'proceed') {
       const m = before.m
-      matchLog.push({ rival: m.rival.def, tier: m.tier, result: m.result ?? '?', turns: m.turn, f: m.score.f, a: m.score.a, prorroga: m.prorroga, pens: !!m.pens, formaLost: m.stats.formaLost })
+      matchLog.push({ rival: m.rival.def, act: before.k === 'match' ? Number(m.rival.def[1]) : 0, tier: m.tier, result: m.result ?? '?', turns: m.turn, f: m.score.f, a: m.score.a, prorroga: m.prorroga, pens: !!m.pens, formaLost: m.stats.formaLost })
     }
     n++
     if (check && n % check === 0) {

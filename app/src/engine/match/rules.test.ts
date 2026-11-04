@@ -37,9 +37,11 @@ describe('pipeline de modificadores', () => {
   it('Desorganizado del jugador aumenta el Ataque rival pero no la Ocasión', () => {
     const run = matchWith({ deck: Array(10).fill('neu.despeje') })
     const ctx = new Ctx(run)
+    const atk0 = ataqueValue(ctx, 10)
+    const oc0 = ocasionValue(ctx, 10)
     addStatus(ctx, 'player', 'desorganizado', 1)
-    expect(ataqueValue(ctx, 10)).toBe(15)
-    expect(ocasionValue(ctx, 10)).toBe(10)
+    expect(ataqueValue(ctx, 10)).toBe(Math.floor(atk0 * 1.5))
+    expect(ocasionValue(ctx, 10)).toBe(oc0)
   })
 })
 

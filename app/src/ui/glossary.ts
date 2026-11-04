@@ -30,6 +30,6 @@ export const CONCEPTS = {
   saque: 'Saque de centro: tras marcar, la Defensa del siguiente gol no se puede atacar hasta tu próximo turno.',
   cambios: 'Cambios: 3 por partido. Descarta una carta de tu mano y roba otra. Ideal para quitarte Estados.',
   forma: 'Forma: la vida de tu equipo durante toda la temporada. A 0, la temporada termina.',
-  strikes: 'Derrotas: perder en Liga o Copa suma una derrota (y cuesta Forma). A la tercera, la directiva te destituye.',
+  strikes: 'Derrotas: perder en Liga o Copa suma un aviso de la directiva (y cuesta Forma). Al tercero en el mismo acto, te destituyen. Los avisos se borran al ascender.',
   energia: 'Energía: se recarga cada turno. Cada carta cuesta la Energía indicada en su esquina.',
 }

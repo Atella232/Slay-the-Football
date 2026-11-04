@@ -3,6 +3,7 @@ import type { CardType, ModifierDef, ModStat, RunModStat, RunState } from '../mo
 import { C, cardDef, clubDef, trofeoDef } from '../registry'
 import { evalCond, evalV } from '../ops/values'
 import { getStatus } from './status'
+import { ataqueAdd, ocasionAdd } from '../rules'
 
 interface ModAcc {
   add: number
@@ -82,7 +83,7 @@ function rivalCommon(ctx: Ctx, stat: ModStat): ModAcc {
 export function ocasionValue(ctx: Ctx, base: number): number {
   const m = ctx.m
   const acc = rivalCommon(ctx, 'ocasionIn')
-  acc.add += getStatus(ctx, 'rival', 'confianza') - m.rival.ocasionMod
+  acc.add += getStatus(ctx, 'rival', 'confianza') - m.rival.ocasionMod + ocasionAdd(m.tier, ctx.run.act)
   let mult = 1
   if (getStatus(ctx, 'rival', 'fatiga') > 0) mult *= 0.75
   if (m.prorroga) mult *= 1.25
@@ -92,7 +93,7 @@ export function ocasionValue(ctx: Ctx, base: number): number {
 export function ataqueValue(ctx: Ctx, base: number): number {
   const m = ctx.m
   const acc = rivalCommon(ctx, 'ataqueIn')
-  acc.add += getStatus(ctx, 'rival', 'confianza') - m.rival.ataqueMod
+  acc.add += getStatus(ctx, 'rival', 'confianza') - m.rival.ataqueMod + ataqueAdd(m.tier, ctx.run.act)
   let mult = 1
   if (getStatus(ctx, 'rival', 'fatiga') > 0) mult *= 0.75
   if (getStatus(ctx, 'player', 'desorganizado') > 0) mult *= 1.5

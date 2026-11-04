@@ -2,6 +2,7 @@ import { installContent } from '../content/index'
 import { simulateRun, type SimResult } from './runSim'
 import { randomBot } from './bots/random'
 import { greedyBot } from './bots/greedy'
+import { heurBot } from './bots/heur'
 import type { Bot } from './bots/types'
 import type { ClubId } from '../engine/model/types'
 import { buildReport, formatReport } from './report'
@@ -14,7 +15,7 @@ function arg(name: string, def: string): string {
   return i >= 0 && args[i + 1] ? args[i + 1] : def
 }
 const smoke = args.includes('--smoke')
-const bots: Record<string, Bot> = { random: randomBot, greedy: greedyBot }
+const bots: Record<string, Bot> = { random: randomBot, greedy: greedyBot, heur: heurBot }
 const clubs: ClubId[] = arg('club', 'all') === 'all' ? ['athletic', 'barcelona', 'madrid'] : [arg('club', 'athletic') as ClubId]
 const runs = Number(arg('runs', smoke ? '25' : '200'))
 const exig = Number(arg('exig', '0'))

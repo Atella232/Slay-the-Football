@@ -384,7 +384,7 @@ export function ActEndScene({ run }: { run: RunState }) {
         ¡<em>Ascenso</em>!
       </motion.div>
       <div className="scene-sub">
-        Acto {run.act} superado. El vestuario descansa y recupera {run.screen.healed} de Forma. Próxima parada: {next}.
+        Acto {run.act} superado. El vestuario descansa y recupera {run.screen.healed} de Forma, y la directiva olvida las derrotas. Próxima parada: {next}.
       </div>
       <button className="btn primary big" onClick={() => act({ t: 'proceed' })}>Empezar el acto {run.act + 1}</button>
     </div>

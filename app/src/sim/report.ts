@@ -25,7 +25,7 @@ export function buildReport(results: SimResult[]): Report {
     if (r.act >= 2) act2++
     if (r.act >= 3) act3++
     for (const m of r.matchLog) {
-      const key = `${m.tier}`
+      const key = m.tier === 'amistoso' ? m.tier : `${m.tier} a${m.act}`
       const t = (tiers[key] ??= { n: 0, w: 0, d: 0, l: 0, turns: 0, prorroga: 0, pens: 0, gf: 0, ga: 0, forma: 0 })
       t.n++
       if (m.result === 'victoria') t.w++

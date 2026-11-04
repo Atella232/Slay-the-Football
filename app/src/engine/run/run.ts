@@ -109,6 +109,8 @@ function finalsFor(run: RunState, act: Act): string[] {
 
 export function setupAct(run: RunState, act: Act): void {
   run.act = act
+  // la directiva renueva su confianza tras cada ascenso
+  if (act > 1) run.strikes = 0
   const nodes = generateMap(act, run.exig, run.rng.map)
   const finals = finalsFor(run, act)
   const finalRival = pick(run.rng.rivals, finals)
@@ -348,7 +350,7 @@ export function proceed(ctx: Ctx): void {
       if (scr.r.after === 'actEnd') {
         if (run.act === 3) return endRun(ctx, 'campeon')
         const missing = run.formaMax - run.forma
-        const pct = Math.max(0, 50 + runMod(run, 'actHealPct') - (run.exig >= 5 ? 10 : 0))
+        const pct = Math.max(0, 60 + runMod(run, 'actHealPct') - (run.exig >= 5 ? 15 : 0))
         const healed = Math.floor((missing * pct) / 100)
         heal(ctx, healed)
         run.screen = { k: 'actEnd', healed }
@@ -497,7 +499,7 @@ export function removeService(ctx: Ctx): void {
 // ───────────────────────── Descanso ─────────────────────────
 
 export function restHealAmount(run: RunState): number {
-  const pct = (run.exig >= 5 ? 25 : 30) + runMod(run, 'restHealPct')
+  const pct = (run.exig >= 5 ? 30 : 35) + runMod(run, 'restHealPct')
   return Math.floor((run.formaMax * pct) / 100)
 }
 

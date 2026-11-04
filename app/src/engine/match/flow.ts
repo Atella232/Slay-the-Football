@@ -11,6 +11,7 @@ import { playerStat, segmentScale } from './modifiers'
 import { getStatus, setStatusRaw, tickStatuses } from './status'
 import { chooseIntent } from './rival'
 import { startPenalties } from './penalties'
+import { segMult } from '../rules'
 
 export const BASE_ENERGY = 3
 export const BASE_DRAW = 5
@@ -30,7 +31,7 @@ export function minuteOf(m: MatchState): number {
 export function createMatch(ctx: Ctx, rivalId: string, tier: Tier, nodeId: string): void {
   const run = ctx.run
   const rd = rivalDef(rivalId)
-  const scale = segmentScale(run, tier === 'amistoso' ? 'liga' : tier)
+  const scale = segmentScale(run, tier === 'amistoso' ? 'liga' : tier) * segMult(tier, run.act)
   const segs = rd.segments.map(s => Math.max(1, Math.floor((s * scale) / 100)))
   const rng = seedRng(run.seed, 'match', run.act, nodeId, run.stats.matches)
   const cards: Record<number, CardInst> = {}
