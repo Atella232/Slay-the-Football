@@ -1,4 +1,5 @@
 import type { ClubId, RunEnd, RunState } from '../model/types'
+import { ACHIEVEMENTS, evaluateAchievements } from './achievements'
 
 export const PROFILE_VERSION = 1
 export const XP_LEVELS = [0, 150, 350, 600, 900, 1250, 1650, 2100, 2600, 3150]
@@ -147,6 +148,12 @@ export function applyRunEnd(p0: Profile, run: RunState, date: string): RunEndRes
   }
   if (run.daily) {
     p.daily[date.slice(0, 10)] = Math.max(p.daily[date.slice(0, 10)] ?? 0, total)
+  }
+  const newAch = evaluateAchievements(run, p)
+  for (const id of newAch) {
+    p.achievements.push(id)
+    const a = ACHIEVEMENTS.find(x => x.id === id)
+    if (a) unlocks.push(`Logro: ${a.name}`)
   }
   for (const c of run.deck) if (!p.seenCards.includes(c.def)) p.seenCards.push(c.def)
   for (const t of run.trofeos) if (!p.seenTrofeos.includes(t.id)) p.seenTrofeos.push(t.id)

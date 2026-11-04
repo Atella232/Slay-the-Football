@@ -203,6 +203,10 @@ export function Hand({ run, m, cambioMode, setCambioMode, onPlay }: { run: RunSt
                   dim={cambioMode ? false : !playable && canAct}
                   own={ownColor(def.club, run.club)}
                   onPointerDown={onPointerDown(uid)}
+                  onContextMenu={e => {
+                    e.preventDefault()
+                    setOverlay({ k: 'inspect', def: def.id, up: inst.up || !!inst.tmpUp, uid })
+                  }}
                   tabIndex={0}
                 />
                 {cambioMode && (

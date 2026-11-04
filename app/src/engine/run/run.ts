@@ -37,6 +37,7 @@ export interface NewRunOpts {
   exig?: number
   daily?: boolean
   clubLevel?: number
+  mods?: string[]
 }
 
 export function newRun(opts: NewRunOpts): RunState {
@@ -98,6 +99,15 @@ export function newRun(opts: NewRunOpts): RunState {
   setupAct(run, 1)
   // trofeo inicial del club
   run.trofeos.push({ id: club.starterTrofeo, ctr: 0 })
+  // modificadores del reto diario
+  for (const id of opts.mods ?? []) {
+    const d = trofeoDef(id)
+    run.trofeos.push({ id, ctr: 0 })
+    for (const op of d.onPickup ?? []) {
+      if (op.op === 'addCard') run.deck.push({ uid: run.nextUid++, def: op.def, up: !!op.upgraded })
+      if (op.op === 'gold') run.gold = Math.max(0, run.gold + op.n)
+    }
+  }
   return run
 }
 

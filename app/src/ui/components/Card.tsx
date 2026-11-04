@@ -38,6 +38,7 @@ export interface CardViewProps {
   onPointerDown?: PointerEventHandler<HTMLDivElement>
   onPointerEnter?: () => void
   onPointerLeave?: () => void
+  onContextMenu?: (e: React.MouseEvent) => void
   tabIndex?: number
 }
 
@@ -64,6 +65,7 @@ export const CardView = memo(function CardView(p: CardViewProps) {
       onPointerDown={p.onPointerDown}
       onPointerEnter={p.onPointerEnter}
       onPointerLeave={p.onPointerLeave}
+      onContextMenu={p.onContextMenu}
       role="button"
       tabIndex={p.tabIndex}
       aria-label={`${name}${p.up ? ' mejorada' : ''}, coste ${p.cost}. ${p.text.replace(/⟦(-?\d+)\|[+=-]⟧/g, '$1')}`}

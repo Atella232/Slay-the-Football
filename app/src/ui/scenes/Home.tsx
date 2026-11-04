@@ -8,12 +8,15 @@ import { Crest } from '../art/team'
 import { Icon } from '../art/icons'
 import { Diagram } from '../art/Diagram'
 import { audio } from '../../platform/audio'
+import { Album, Daily } from './Album'
 
 export function Home() {
   const home = useGame(s => s.home)
   if (home === 'clubs') return <ClubSelect />
   if (home === 'history') return <History />
   if (home === 'credits') return <Credits />
+  if (home === 'album') return <Album />
+  if (home === 'daily') return <Daily />
   return <Title />
 }
 
@@ -47,9 +50,17 @@ function Title() {
           <button className={`btn big ${saved ? '' : 'primary'}`} onClick={() => { audio.play('click'); setHome('clubs') }}>
             Nueva temporada
           </button>
-          <button className="btn" onClick={() => setHome('history')}>
-            Historial
+          <button className="btn" onClick={() => setHome('daily')}>
+            <Icon name="reloj" size={18} /> Reto diario
           </button>
+          <div className="row" style={{ gap: 10 }}>
+            <button className="btn" style={{ flex: 1 }} onClick={() => setHome('album')}>
+              Álbum
+            </button>
+            <button className="btn" style={{ flex: 1 }} onClick={() => setHome('history')}>
+              Historial
+            </button>
+          </div>
           <button className="btn" onClick={() => setOverlay({ k: 'settings' })}>
             <Icon name="ajustes" size={18} /> Ajustes
           </button>

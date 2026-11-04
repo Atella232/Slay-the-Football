@@ -15,7 +15,7 @@ export type Overlay =
   | { k: 'inspect'; def: string; up: boolean; uid?: number }
   | { k: 'confirm'; text: string; yes: Action }
 
-export type Home = 'title' | 'clubs' | 'album' | 'history' | 'credits'
+export type Home = 'title' | 'clubs' | 'album' | 'history' | 'credits' | 'daily'
 
 interface GameStore {
   profile: Profile
@@ -29,7 +29,7 @@ interface GameStore {
   endResult: RunEndResult | null
   setHome(h: Home): void
   setOverlay(o: Overlay | null): void
-  startRun(club: ClubId, exig: number, opts?: { seed?: string; daily?: boolean }): void
+  startRun(club: ClubId, exig: number, opts?: { seed?: string; daily?: boolean; mods?: string[] }): void
   continueRun(): void
   act(a: Action): void
   skip(): void
@@ -93,7 +93,7 @@ export const useGame = create<GameStore>((set, get) => ({
   startRun(club, exig, opts = {}) {
     const p = get().profile
     const seed = opts.seed ?? Math.random().toString(36).slice(2, 10).toUpperCase()
-    const run = newRun({ seed, club, exig, daily: opts.daily, clubLevel: clubLevel(p.clubXp[club]) })
+    const run = newRun({ seed, club, exig, daily: opts.daily, mods: opts.mods, clubLevel: opts.daily ? 10 : clubLevel(p.clubXp[club]) })
     queue = []
     set({ run, view: run, endResult: null, overlay: null })
     persist(run)

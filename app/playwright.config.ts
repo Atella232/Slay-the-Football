@@ -16,8 +16,9 @@ export default defineConfig({
     timeout: 120_000,
   },
   projects: [
-    { name: 'desktop', use: { viewport: { width: 1280, height: 720 } }, testIgnore: /mobile/ },
+    { name: 'desktop', use: { viewport: { width: 1280, height: 720 } }, testIgnore: /mobile|portrait/ },
     { name: 'wide', use: { viewport: { width: 1600, height: 720 } }, testMatch: /smoke/ },
+    { name: 'portrait', use: { ...devices['Pixel 7'] }, testMatch: /portrait/ },
     { name: 'mobile', use: { ...devices['Pixel 7 landscape'] }, testMatch: /mobile|smoke/ },
   ],
 })

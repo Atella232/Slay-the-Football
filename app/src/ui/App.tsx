@@ -9,6 +9,7 @@ import { ActEndScene, CardChoiceScene, DeckPickScene, EventScene, RestScene, Rew
 import { TopBar } from './components/TopBar'
 import { Overlays } from './components/Overlays'
 import { TooltipLayer } from './components/Tooltip'
+import { TutorialCoach } from './components/Tutorial'
 import { installFxAudio } from './fxAudio'
 import { audio } from '../platform/audio'
 import type { RunState } from '../engine/model/types'
@@ -77,6 +78,7 @@ export function App() {
         }}
       >
         {view ? <RunView run={view} /> : <Home />}
+        {view && <TutorialCoach />}
         <Overlays />
         <TooltipLayer root={root} />
         {toast && <div className="toast" role="status">{toast}</div>}

@@ -13,6 +13,7 @@ import { MADRID } from './clubs/madrid/club'
 import { MADRID_CARDS } from './clubs/madrid/cards'
 import { MADRID_TROFEOS } from './clubs/madrid/trofeos'
 import { NEUTRAL_TROFEOS } from './trofeos'
+import { DAILY_MODS } from './trofeos/daily'
 import { CONSUMIBLES } from './consumibles'
 import { CHARLAS } from './charlas'
 import { HANDLERS } from './handlers'
@@ -40,7 +41,7 @@ export function buildContent(): ContentPack {
     version: CONTENT_VERSION,
     clubs,
     cards: byId(cards, 'Carta'),
-    trofeos: byId([...ATHLETIC_TROFEOS, ...BARCELONA_TROFEOS, ...MADRID_TROFEOS, ...NEUTRAL_TROFEOS], 'Trofeo'),
+    trofeos: byId([...ATHLETIC_TROFEOS, ...BARCELONA_TROFEOS, ...MADRID_TROFEOS, ...NEUTRAL_TROFEOS, ...DAILY_MODS], 'Trofeo'),
     consumibles: byId(CONSUMIBLES, 'Consumible'),
     rivals: byId([...ACT1_RIVALS, ...ACT2_RIVALS, ...ACT3_RIVALS], 'Rival'),
     events: byId(EVENTS, 'Evento'),

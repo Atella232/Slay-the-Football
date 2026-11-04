@@ -139,7 +139,7 @@ function MatchInner({ run, m }: { run: RunState; m: MatchState }) {
         {cambioMode && <div className="hint-bar">Elige la carta que quieres cambiar (Esc para cancelar)</div>}
         {showTip && !cambioMode && (
           <div className="hint-bar" style={{ cursor: 'pointer' }} onClick={() => markTutorial('firstMatch')}>
-            Arrastra una carta hacia arriba (o tócala dos veces) para jugarla · E: fin de turno · ✕
+            Arrastra una carta hacia arriba (o tócala dos veces) para jugarla · Mantén pulsado para ver detalles · E: fin de turno · ✕
           </div>
         )}
       </div>
