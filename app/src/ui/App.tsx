@@ -33,7 +33,7 @@ function RunView({ run }: { run: RunState }) {
   return (
     <>
       <div className="chalkboard" />
-      <AnimatePresence mode="wait">
+      <AnimatePresence initial={false}>
         <motion.div key={sceneKey} style={{ position: 'absolute', inset: 0 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.22 }}>
           {scene}
         </motion.div>

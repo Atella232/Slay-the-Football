@@ -37,6 +37,10 @@ export function Hand({ run, m, cambioMode, setCambioMode, onPlay }: { run: RunSt
   const canAct = m.phase === 'player' && !m.pending
 
   const sel = selRaw !== null && hand.includes(selRaw) ? selRaw : null
+  const selRef = useRef<number | null>(sel)
+  useEffect(() => {
+    selRef.current = sel
+  })
 
   const tryPlay = useCallback(
     (uid: number) => {
@@ -80,11 +84,14 @@ export function Hand({ run, m, cambioMode, setCambioMode, onPlay }: { run: RunSt
           if (cambioMode) {
             act({ t: 'cambio', uid })
             setCambioMode(false)
-          } else setSel(uid)
+          } else {
+            selRef.current = uid
+            setSel(uid)
+          }
         }
-      } else if ((e.key === 'Enter' || e.key === ' ') && sel !== null) {
+      } else if ((e.key === 'Enter' || e.key === ' ') && selRef.current !== null) {
         e.preventDefault()
-        tryPlay(sel)
+        tryPlay(selRef.current)
       } else if (e.key === 'Escape') {
         setSel(null)
         setCambioMode(false)

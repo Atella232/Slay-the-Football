@@ -569,6 +569,7 @@ export function resolveDeckPick(ctx: Ctx, uids: number[]): void {
     }
   }
   run.screen = p.back
+  if (p.then?.length) execRunOps(ctx, p.then)
 }
 
 export function resolveCardChoice(ctx: Ctx, i: number): void {
@@ -582,6 +583,7 @@ export function resolveCardChoice(ctx: Ctx, i: number): void {
     run.stats.cardsPicked.push(c.def)
   }
   run.screen = scr.c.back
+  if (scr.c.then?.length) execRunOps(ctx, scr.c.then)
 }
 
 // ───────────────────────── Eventos ─────────────────────────
@@ -669,8 +671,7 @@ export function execRunOps(ctx: Ctx, ops: RunOp[]): void {
       case 'deckPick': {
         const back: Screen = run.screen
         if (deckPickCandidates(run, op.purpose).length === 0) break
-        run.screen = { k: 'deckPick', p: { purpose: op.purpose, n: op.n, back } }
-        // las ops restantes se descartan: una elección por opción
+        run.screen = { k: 'deckPick', p: { purpose: op.purpose, n: op.n, back, then: queue.slice() } }
         return
       }
       case 'addCardChoice': {
@@ -678,7 +679,7 @@ export function execRunOps(ctx: Ctx, ops: RunOp[]): void {
         const pool = cardPool(run, op.pool)
         const cards = sample(run.rng.events, pool, op.n).map(d => ({ def: d.id, up: false }))
         if (!cards.length) break
-        run.screen = { k: 'cardChoice', c: { cards, back } }
+        run.screen = { k: 'cardChoice', c: { cards, back, then: queue.slice() } }
         return
       }
       case 'startMatch': {

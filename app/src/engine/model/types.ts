@@ -599,11 +599,13 @@ export interface DeckPickState {
   purpose: DeckPickPurpose
   n: number
   back: Screen
+  then?: RunOp[]
 }
 
 export interface CardChoiceState {
   cards: { def: string; up: boolean }[]
   back: Screen
+  then?: RunOp[]
 }
 
 export type RunEnd = 'campeon' | 'eliminado' | 'lesionado' | 'destituido' | 'abandono'

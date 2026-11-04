@@ -78,14 +78,14 @@ export const ATHLETIC_CARDS: CardDef[] = [
     art: { tpl: 'sistema' },
   },
   {
-    id: 'ath.lezama', name: 'Lezama', club: 'athletic', type: 'sistema', rarity: 'poco', cost: 1,
+    id: 'ath.lezama', unlock: 3, name: 'Lezama', club: 'athletic', type: 'sistema', rarity: 'poco', cost: 1,
     ops: [], hooks: [{ on: 'cardExhausted', limit: { per: 'turn', n: 2 }, ops: [D(1)] }],
     up: { hooks: [{ on: 'cardExhausted', limit: { per: 'turn', n: 3 }, ops: [D(1)] }] },
     text: 'Cuando agotes una carta, roba 1 (máx. 2 por turno).', upText: 'Cuando agotes una carta, roba 1 (máx. 3 por turno).',
     art: { tpl: 'rondo' },
   },
   {
-    id: 'ath.muralla', name: 'Muralla', club: 'athletic', type: 'defensa', rarity: 'poco', cost: 2,
+    id: 'ath.muralla', unlock: 4, name: 'Muralla', club: 'athletic', type: 'defensa', rarity: 'poco', cost: 2,
     ops: [{ op: 'spendRes', res: G, max: 'all', then: [B(add(10, mul(spent, 2)))] }],
     up: { ops: [{ op: 'spendRes', res: G, max: 'all', then: [B(add(13, mul(spent, 3)))] }] },
     text: 'Gasta toda tu Garra. Gana 10 de Bloqueo, +2 por cada Garra gastada.',
@@ -99,7 +99,7 @@ export const ATHLETIC_CARDS: CardDef[] = [
     art: { tpl: 'contra' },
   },
   {
-    id: 'ath.sacrificio', name: 'Sacrificio', club: 'athletic', type: 'tactica', rarity: 'poco', cost: 0, kw: ['agotar'],
+    id: 'ath.sacrificio', unlock: 2, name: 'Sacrificio', club: 'athletic', type: 'tactica', rarity: 'poco', cost: 0, kw: ['agotar'],
     ops: [HURT(3), E(2)], up: { ops: [HURT(2), E(2)] }, art: { tpl: 'remontada' },
   },
   {
@@ -109,7 +109,7 @@ export const ATHLETIC_CARDS: CardDef[] = [
     art: { tpl: 'muro' },
   },
   {
-    id: 'ath.forjado', name: 'Forjado en Lezama', club: 'athletic', type: 'tactica', rarity: 'poco', cost: 1,
+    id: 'ath.forjado', unlock: 3, name: 'Forjado en Lezama', club: 'athletic', type: 'tactica', rarity: 'poco', cost: 1,
     ops: [{ op: 'pick', from: 'hand', min: 0, max: 2, act: 'exhaust' }, B(mul(picked, 4))],
     up: { ops: [{ op: 'pick', from: 'hand', min: 0, max: 2, act: 'exhaust' }, B(mul(picked, 6))] },
     text: 'Agota hasta 2 cartas de tu mano. Gana 4 de Bloqueo por cada una.',
@@ -129,7 +129,7 @@ export const ATHLETIC_CARDS: CardDef[] = [
 
   // ── Raras ──
   {
-    id: 'ath.catedral', name: 'La Catedral', club: 'athletic', type: 'sistema', rarity: 'rara', cost: 3,
+    id: 'ath.catedral', unlock: 8, name: 'La Catedral', club: 'athletic', type: 'sistema', rarity: 'rara', cost: 3,
     ops: [], hooks: [{ on: 'turnStart', ops: [B(5), RES(G, 1)] }], up: { cost: 2 },
     text: 'Al inicio de cada turno, gana 5 de Bloqueo y 1 de Garra.',
     art: { tpl: 'sistema' },
@@ -143,19 +143,19 @@ export const ATHLETIC_CARDS: CardDef[] = [
     art: { tpl: 'remontada' },
   },
   {
-    id: 'ath.nunca_rendirse', name: 'Nunca Rendirse', club: 'athletic', type: 'sistema', rarity: 'rara', cost: 2,
+    id: 'ath.nunca_rendirse', unlock: 6, name: 'Nunca Rendirse', club: 'athletic', type: 'sistema', rarity: 'rara', cost: 2,
     ops: [], mods: [{ stat: 'peligro', type: 'ataque', add: 4, when: phase('tramoFinal') }], up: { cost: 1 },
     text: 'En el tramo final, tus Ataques generan +4 de Peligro.',
     art: { tpl: 'remontada' },
   },
   {
-    id: 'ath.fuego_forja', name: 'Fuego de Forja', club: 'athletic', type: 'tactica', rarity: 'rara', cost: 1, kw: ['agotar'],
+    id: 'ath.fuego_forja', unlock: 5, name: 'Fuego de Forja', club: 'athletic', type: 'tactica', rarity: 'rara', cost: 1, kw: ['agotar'],
     ops: [CUSTOM('exhaustHand'), RES(G, mul(picked, 2))], up: { cost: 0 },
     text: 'Agota todas las demás cartas de tu mano. Gana 2 de Garra por cada una.',
     art: { tpl: 'remontada' },
   },
   {
-    id: 'ath.muro_historico', name: 'Muro Histórico', club: 'athletic', type: 'sistema', rarity: 'rara', cost: 2,
+    id: 'ath.muro_historico', unlock: 7, name: 'Muro Histórico', club: 'athletic', type: 'sistema', rarity: 'rara', cost: 2,
     ops: [{ op: 'retainBlock', n: 15 }], up: { cost: 1 },
     text: 'Al inicio de cada turno conservas la mitad de tu Bloqueo (máx. 15).',
     art: { tpl: 'muro' },
@@ -171,14 +171,14 @@ export const ATHLETIC_CARDS: CardDef[] = [
     flavor: '«El Txopo». Bajo palos, una montaña.',
   },
   {
-    id: 'ath.zarra', name: 'Zarra', club: 'athletic', type: 'ataque', rarity: 'leyenda', cost: 2, kw: ['doblete'],
+    id: 'ath.zarra', unlock: 9, name: 'Zarra', club: 'athletic', type: 'ataque', rarity: 'leyenda', cost: 2, kw: ['doblete'],
     ops: [IF(hasRes(G, 5), [P(8, 3)], [P(8, 2)])], up: { ops: [IF(hasRes(G, 5), [P(10, 3)], [P(10, 2)])] },
     text: 'Doblete. Genera {P} de Peligro dos veces. Con 5+ de Garra, tres veces.',
     legend: { player: 'Telmo Zarra', dorsal: 9 }, art: { tpl: 'cabezazo' },
     flavor: 'El mejor rematador de cabeza de Europa.',
   },
   {
-    id: 'ath.aduriz', name: 'Aduriz', club: 'athletic', type: 'ataque', rarity: 'leyenda', cost: 1,
+    id: 'ath.aduriz', unlock: 10, name: 'Aduriz', club: 'athletic', type: 'ataque', rarity: 'leyenda', cost: 1,
     ops: [IF(phase('tramoFinal'), [P(20)], [P(10)])], up: { ops: [IF(phase('tramoFinal'), [P(25)], [P(13)])] },
     text: 'Genera {P} de Peligro. En el tramo final, genera {P2} en su lugar.',
     legend: { player: 'Aritz Aduriz', dorsal: 20 }, art: { tpl: 'cabezazo' },

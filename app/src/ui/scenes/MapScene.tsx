@@ -58,7 +58,8 @@ export function MapScene({ run }: { run: RunState }) {
   useEffect(() => {
     const opts = nodes.filter(n => reach.has(n.id)).sort((a, b) => a.col - b.col)
     const onKey = (e: KeyboardEvent) => {
-      if (useGame.getState().overlay) return
+      const st = useGame.getState()
+      if (st.overlay || st.run?.screen.k !== 'map') return
       const n = Number(e.key)
       if (n >= 1 && n <= opts.length) choose(opts[n - 1].id)
     }
