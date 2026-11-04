@@ -51,7 +51,7 @@ export function TutorialCoach() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
-          style={{ position: 'absolute', left: '50%', top: 70, transform: 'translateX(-50%)', width: 560, padding: '12px 16px', zIndex: 200, borderColor: 'rgba(242,193,78,.6)' }}
+          style={{ position: 'absolute', left: 'calc(50% - 280px)', top: 70, width: 560, padding: '12px 16px', zIndex: 200, borderColor: 'rgba(242,193,78,.6)' }}
         >
           <div className="row" style={{ alignItems: 'flex-start' }}>
             <div style={{ flex: 1 }}>

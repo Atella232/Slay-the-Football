@@ -6,6 +6,7 @@ import { previewIntent } from '../../engine/match/rival'
 import { C, cardDef, clubDef, rivalDef } from '../../engine/registry'
 import { cardText } from '../../engine/text/cardText'
 import { pickCandidates } from '../../engine/match/queue'
+import { playability } from '../../engine/match/cards'
 import { penaltyScore } from '../../engine/match/penalties'
 import { useGame } from '../store/game'
 import { fxBus } from '../store/fx'
@@ -123,7 +124,12 @@ function MatchInner({ run, m }: { run: RunState; m: MatchState }) {
             ))}
           </span>
         </button>
-        <button className="btn primary big end-turn" disabled={m.phase !== 'player' || !!m.pending} onClick={endTurn} aria-keyshortcuts="E">
+        <button
+          className={`btn primary big end-turn ${m.phase === 'player' && !m.pending && !busy && !m.piles.hand.some(u => playability(ctx, u).ok) ? 'nudge' : ''}`}
+          disabled={m.phase !== 'player' || !!m.pending}
+          onClick={endTurn}
+          aria-keyshortcuts="E"
+        >
           Fin de turno
         </button>
         <button className="pile-btn" style={{ right: 104 }} onClick={() => setOverlay({ k: 'pile', pile: 'agotadas' })} aria-label="Cartas agotadas">

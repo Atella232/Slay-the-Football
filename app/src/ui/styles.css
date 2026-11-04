@@ -1101,6 +1101,15 @@ button {
   width: 178px;
 }
 
+.end-turn.nudge {
+  animation: nudge 1.2s ease-in-out infinite;
+}
+
+@keyframes nudge {
+  0%, 100% { box-shadow: 0 4px 0 #9b6c0c, 0 8px 18px rgba(0, 0, 0, 0.4); }
+  50% { box-shadow: 0 4px 0 #9b6c0c, 0 0 28px rgba(242, 193, 78, 0.9); }
+}
+
 .cambio-btn {
   position: absolute;
   right: 22px;

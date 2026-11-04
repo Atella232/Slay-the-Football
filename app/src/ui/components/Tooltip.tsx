@@ -3,7 +3,7 @@ import { useStage } from '../Stage'
 
 /** Tooltip global por delegación: cualquier elemento con data-tip lo muestra. */
 export function TooltipLayer({ root }: { root: React.RefObject<HTMLDivElement | null> }) {
-  const { scale } = useStage()
+  const { scale, w } = useStage()
   const [tip, setTip] = useState<{ html: string; x: number; y: number; below: boolean } | null>(null)
   const timer = useRef<number | null>(null)
   useEffect(() => {
@@ -46,7 +46,7 @@ export function TooltipLayer({ root }: { root: React.RefObject<HTMLDivElement | 
   return (
     <div
       className="tooltip"
-      style={{ left: tip.x, top: tip.y, transform: `translate(-50%, ${tip.below ? '0' : '-100%'})` }}
+      style={{ left: Math.max(150, Math.min(w - 150, tip.x)), top: tip.y, transform: `translate(-50%, ${tip.below ? '0' : '-100%'})` }}
       role="tooltip"
     >
       {rest.length ? (
