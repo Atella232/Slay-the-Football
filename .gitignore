@@ -29,3 +29,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+app/dist-single/
+app/test-results/
+app/playwright-report/
+app/sim/reports/
