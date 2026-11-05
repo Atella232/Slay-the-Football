@@ -6,7 +6,7 @@ export const BARCELONA: ClubDef = {
   name: 'FC Barcelona',
   short: 'FCB',
   motto: 'Més que un club',
-  forma: 70,
+  forma: 67,
   res: 'posesion',
   resName: 'Posesión',
   resMax: 8,

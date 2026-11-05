@@ -21,7 +21,7 @@ export const BARCELONA_CARDS: CardDef[] = [
   // ── Iniciales ──
   {
     id: 'bar.pase_corto', name: 'Pase Corto', club: 'barcelona', type: 'ataque', rarity: 'inicial', cost: 1,
-    ops: [P(6), RES(POS, 1)], up: { ops: [P(9), RES(POS, 1)] }, art: { tpl: 'triangulo' },
+    ops: [P(5), RES(POS, 1)], up: { ops: [P(8), RES(POS, 1)] }, art: { tpl: 'triangulo' },
     flavor: 'El balón no se cansa.',
   },
   {
@@ -68,7 +68,8 @@ export const BARCELONA_CARDS: CardDef[] = [
   },
   {
     id: 'bar.rondo', name: 'Rondo', club: 'barcelona', type: 'tactica', rarity: 'comun', cost: 0,
-    ops: [RIVAL('fatiga', 1)], up: { ops: [RIVAL('fatiga', 1), B(4)] }, art: { tpl: 'rondo', seed: 2 },
+    ops: [B(2), IF(hasRes(POS, 4), [RIVAL('fatiga', 1)])], up: { ops: [B(4), IF(hasRes(POS, 4), [RIVAL('fatiga', 1)])] },
+    art: { tpl: 'rondo', seed: 2 },
     flavor: 'Siete contra dos. Que corran ellos.',
   },
   {
@@ -83,7 +84,7 @@ export const BARCELONA_CARDS: CardDef[] = [
   },
   {
     id: 'bar.cinco_segundos', name: 'Presión de Cinco Segundos', club: 'barcelona', type: 'tactica', rarity: 'comun', cost: 1,
-    ops: [B(5), RIVAL('desorganizado', 1)], up: { ops: [B(8), RIVAL('desorganizado', 1)] }, art: { tpl: 'presion' },
+    ops: [B(4), RIVAL('desorganizado', 1)], up: { ops: [B(7), RIVAL('desorganizado', 1)] }, art: { tpl: 'presion' },
   },
   {
     id: 'bar.temporizar', name: 'Temporizar', club: 'barcelona', type: 'tactica', rarity: 'comun', cost: 1,
@@ -116,9 +117,9 @@ export const BARCELONA_CARDS: CardDef[] = [
   },
   {
     id: 'bar.balon_pies', unlock: 3, name: 'Balón en los Pies', club: 'barcelona', type: 'defensa', rarity: 'poco', cost: 1,
-    ops: [B(add(4, mul(resOf(POS), 2)))], up: { ops: [B(add(7, mul(resOf(POS), 2)))] },
-    text: 'Gana 4 de Bloqueo, +2 por cada Posesión que tengas.',
-    upText: 'Gana 7 de Bloqueo, +2 por cada Posesión que tengas.',
+    ops: [B(add(5, resOf(POS)))], up: { ops: [B(add(8, resOf(POS)))] },
+    text: 'Gana 5 de Bloqueo, +1 por cada Posesión que tengas.',
+    upText: 'Gana 8 de Bloqueo, +1 por cada Posesión que tengas.',
     art: { tpl: 'rondo', seed: 3 },
   },
   {
@@ -173,8 +174,8 @@ export const BARCELONA_CARDS: CardDef[] = [
   },
   {
     id: 'bar.verticalidad', unlock: 5, name: 'Verticalidad', club: 'barcelona', type: 'tactica', rarity: 'rara', cost: 1,
-    ops: [{ op: 'spendRes', res: POS, max: 'all', then: [D(spent)] }], up: { cost: 0 },
-    text: 'Gasta toda tu Posesión. Roba 1 carta por cada Posesión gastada.',
+    ops: [{ op: 'spendRes', res: POS, max: 4, then: [D(spent)] }], up: { cost: 0 },
+    text: 'Gasta hasta 4 de Posesión. Roba 1 carta por cada Posesión gastada.',
     art: { tpl: 'paseLargo', seed: 2 },
     flavor: 'Tener el balón es el camino, no la meta.',
   },

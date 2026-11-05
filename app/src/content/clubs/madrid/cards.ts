@@ -12,14 +12,14 @@ export const MADRID_CARDS: CardDef[] = [
   // ── Iniciales ──
   {
     id: 'mad.galope', name: 'Galope por Banda', club: 'madrid', type: 'ataque', rarity: 'inicial', cost: 1,
-    ops: [IF(last('tactica'), [P(10)], [P(7)])], up: { ops: [IF(last('tactica'), [P(13)], [P(9)])] },
+    ops: [IF(last('tactica'), [P(9)], [P(7)])], up: { ops: [IF(last('tactica'), [P(12)], [P(9)])] },
     text: 'Genera {P} de Peligro. Si la carta anterior fue una Táctica, genera {P2} en su lugar.',
     art: { tpl: 'banda' },
   },
   {
     id: 'mad.transicion', name: 'Transición', club: 'madrid', type: 'tactica', rarity: 'inicial', cost: 1,
-    ops: [B(4), { op: 'freeNext', type: 'ataque' }, RES(M, 1)],
-    up: { ops: [B(7), { op: 'freeNext', type: 'ataque' }, RES(M, 1)] }, art: { tpl: 'contra' },
+    ops: [B(3), { op: 'freeNext', type: 'ataque' }, RES(M, 1)],
+    up: { ops: [B(6), { op: 'freeNext', type: 'ataque' }, RES(M, 1)] }, art: { tpl: 'contra' },
   },
 
   // ── Comunes ──
@@ -59,7 +59,7 @@ export const MADRID_CARDS: CardDef[] = [
     art: { tpl: 'despeje' },
   },
   {
-    id: 'mad.achique', name: 'Achique de Espacios', club: 'madrid', type: 'defensa', rarity: 'comun', cost: 2,
+    id: 'mad.achique', name: 'Bloque Medio', club: 'madrid', type: 'defensa', rarity: 'comun', cost: 2,
     ops: [B(11), RES(M, 1)], up: { ops: [B(15), RES(M, 1)] }, art: { tpl: 'lineaAlta' },
   },
   {
@@ -76,7 +76,7 @@ export const MADRID_CARDS: CardDef[] = [
     flavor: 'El estadio aprieta y al visitante le tiemblan las piernas.',
   },
   {
-    id: 'mad.pared', name: 'Pared', club: 'madrid', type: 'tactica', rarity: 'comun', cost: 0,
+    id: 'mad.pared', name: 'Toque de Primera', club: 'madrid', type: 'tactica', rarity: 'comun', cost: 0,
     ops: [D(1), SELF('contragolpe', 1)], up: { ops: [D(1), SELF('contragolpe', 1), RES(M, 1)] },
     text: 'Roba 1 carta. Ganas Contragolpe (+3 de Peligro en tu próximo Ataque).',
     upText: 'Roba 1 carta. Ganas Contragolpe (+3 de Peligro en tu próximo Ataque). Gana 1 de Momentum.',
@@ -132,10 +132,10 @@ export const MADRID_CARDS: CardDef[] = [
     art: { tpl: 'parada' },
   },
   {
-    id: 'mad.basculacion', name: 'Basculación', club: 'madrid', type: 'defensa', rarity: 'poco', cost: 1, unlock: 3,
-    ops: [B(add(5, mul(tacticasJugadas, 3)))], up: { ops: [B(add(8, mul(tacticasJugadas, 3)))] },
-    text: 'Gana 5 de Bloqueo, +3 por cada Táctica que hayas jugado este turno.',
-    upText: 'Gana 8 de Bloqueo, +3 por cada Táctica que hayas jugado este turno.',
+    id: 'mad.basculacion', name: 'Ayudas Defensivas', club: 'madrid', type: 'defensa', rarity: 'poco', cost: 1, unlock: 3,
+    ops: [B(add(4, mul(tacticasJugadas, 2)))], up: { ops: [B(add(7, mul(tacticasJugadas, 2)))] },
+    text: 'Gana 4 de Bloqueo, +2 por cada Táctica que hayas jugado este turno.',
+    upText: 'Gana 7 de Bloqueo, +2 por cada Táctica que hayas jugado este turno.',
     art: { tpl: 'autobus' },
   },
   {
@@ -206,7 +206,7 @@ export const MADRID_CARDS: CardDef[] = [
   },
   {
     id: 'mad.benzema', name: 'Benzema', club: 'madrid', type: 'ataque', rarity: 'leyenda', cost: 2, kw: ['doblete'], unlock: 10,
-    ops: [P(6, add(1, resOf(M)))], up: { ops: [P(8, add(1, resOf(M)))] },
+    ops: [P(5, add(1, resOf(M)))], up: { ops: [P(7, add(1, resOf(M)))] },
     text: 'Doblete. Genera {P} de Peligro, una vez más por cada Momentum que tengas.',
     legend: { player: 'Karim Benzema', dorsal: 9 }, art: { tpl: 'desmarque' },
     flavor: 'Diecisiete minutos para darle la vuelta a una eliminatoria.',

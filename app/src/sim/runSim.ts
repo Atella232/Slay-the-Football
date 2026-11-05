@@ -13,6 +13,7 @@ export interface SimResult {
   actions: number
   stats: RunState['stats']
   errors: string[]
+  deckAct2: string[] | null
   matchLog: { rival: string; act: number; tier: string; result: string; turns: number; f: number; a: number; prorroga: boolean; pens: boolean; formaLost: number }[]
   final: RunState
 }
@@ -24,6 +25,7 @@ export function simulateRun(opts: { seed: string; club: ClubId; exig?: number; b
   const matchLog: SimResult['matchLog'] = []
   const max = opts.maxActions ?? 20000
   let n = 0
+  let deckAct2: string[] | null = null
   const check = opts.checkEvery ?? 1
   while (state.screen.k !== 'ended' && n < max) {
     const legal = legalActions(state)
@@ -39,6 +41,7 @@ export function simulateRun(opts: { seed: string; club: ClubId; exig?: number; b
       break
     }
     state = res.state
+    if (!deckAct2 && state.act >= 2) deckAct2 = state.deck.map(c => c.def)
     if (before.k === 'match' && before.m.phase === 'ended' && a.t === 'proceed') {
       const m = before.m
       matchLog.push({ rival: m.rival.def, act: before.k === 'match' ? Number(m.rival.def[1]) : 0, tier: m.tier, result: m.result ?? '?', turns: m.turn, f: m.score.f, a: m.score.a, prorroga: m.prorroga, pens: !!m.pens, formaLost: m.stats.formaLost })
@@ -54,5 +57,5 @@ export function simulateRun(opts: { seed: string; club: ClubId; exig?: number; b
   }
   if (n >= max) errors.push('Límite de acciones alcanzado')
   const outcome = state.screen.k === 'ended' ? state.screen.outcome : 'incompleta'
-  return { seed: opts.seed, club: opts.club, outcome, act: state.act, floors: state.stats.floors, actions: n, stats: state.stats, errors, matchLog, final: state }
+  return { seed: opts.seed, club: opts.club, outcome, act: state.act, floors: state.stats.floors, actions: n, stats: state.stats, errors, deckAct2, matchLog, final: state }
 }

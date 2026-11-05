@@ -261,7 +261,7 @@ describe('cartas', () => {
     run = act(run, { t: 'play', uid: u })
     const m = M(run)
     expect(m.player.res.garra).toBe(0)
-    expect(100 - m.rival.defensa).toBe(19)
+    expect(100 - m.rival.defensa).toBe(11 + 3 * 4)
   })
 
   it('los cambios descartan una carta y roban otra', () => {

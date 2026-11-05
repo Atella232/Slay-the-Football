@@ -21,5 +21,22 @@ Invariantes comprobadas tras cada acción: cada carta en una sola pila, energía
 | Final | acto 1 75–85%, acto 2 65–80%, acto 3 55–70% |
 | Ninguna carta | > +6 pp de victoria al tenerla en el mazo |
 
-## Estado actual
-Ver la sección de resultados del último commit de balance en el historial de git (`git log --grep balance`).
+## Estado actual (bot heur, 100 temporadas por club, semilla c4)
+| Club | Campeón | Llega al acto 2 | Llega al acto 3 | Final de temporada más frecuente |
+|---|---:|---:|---:|---|
+| Athletic | 41% | 90% | 61% | sin Forma (29%) |
+| Barça | 43% | 84% | 54% | eliminado en una Final (26%) |
+| Real Madrid | 40% | 95% | 69% | sin Forma (40%): ataca mucho y se desgasta |
+
+Victoria por partido (Liga / Copa / Final) y turnos medios de Liga:
+| Club | Acto 1 | Acto 2 | Acto 3 | Turnos Liga |
+|---|---|---|---|---|
+| Athletic | 96 / 90 / 91% | 88 / 82 / 81% | 85 / 82 / 84% | 4,8 |
+| Barça | 95 / 80 / 86% | 90 / 92 / 75% | 95 / 90 / 88% | 4,2–4,9 |
+| Real Madrid | 97 / 94 / 95% | 89 / 85 / 87% | 89 / 81 / 76% | 3,7–4,3 |
+
+Exigencia 15 (40 temporadas por club): 5–20% de campeón.
+
+Pendiente de observar con partidas humanas: los partidos de Liga duran menos (4–5 turnos) que el objetivo de diseño (5,5–6,5) y casi nunca acaban en empate. Si se quiere más tensión con el reloj, subir `segMult.liga` en `rules.ts` y compensar con Forma de los clubes.
+
+El impacto por carta se mide sobre el mazo con el que se empieza el acto 2 (para reducir el sesgo de supervivencia). Con 100 temporadas el ruido es de ±15 pp, así que sólo sirve para detectar valores extremos.

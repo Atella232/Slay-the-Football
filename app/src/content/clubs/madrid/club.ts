@@ -6,7 +6,7 @@ export const MADRID: ClubDef = {
   name: 'Real Madrid',
   short: 'RMA',
   motto: 'Hasta el final, vamos Real',
-  forma: 74,
+  forma: 70,
   res: 'momentum',
   resName: 'Momentum',
   resMax: 5,

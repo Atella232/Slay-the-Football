@@ -7,7 +7,7 @@ export const ATHLETIC_CARDS: CardDef[] = [
   // ── Iniciales ──
   {
     id: 'ath.bravura', name: 'Bravura', club: 'athletic', type: 'ataque', rarity: 'inicial', cost: 1,
-    ops: [P(7), RES(G, 1)], up: { ops: [P(10), RES(G, 1)] }, art: { tpl: 'contra' },
+    ops: [P(8), RES(G, 1)], up: { ops: [P(11), RES(G, 1)] }, art: { tpl: 'contra' },
     flavor: 'Ni un balón perdido.',
   },
   {
@@ -37,10 +37,10 @@ export const ATHLETIC_CARDS: CardDef[] = [
   },
   {
     id: 'ath.choque', name: 'Choque Frontal', club: 'athletic', type: 'ataque', rarity: 'comun', cost: 2,
-    ops: [{ op: 'spendRes', res: G, max: 3, then: [P(add(10, mul(spent, 3)))] }],
-    up: { ops: [{ op: 'spendRes', res: G, max: 3, then: [P(add(12, mul(spent, 4)))] }] },
-    text: 'Gasta hasta 3 de Garra. Genera 10 de Peligro, +3 por cada Garra gastada.',
-    upText: 'Gasta hasta 3 de Garra. Genera 12 de Peligro, +4 por cada Garra gastada.',
+    ops: [{ op: 'spendRes', res: G, max: 3, then: [P(add(11, mul(spent, 4)))] }],
+    up: { ops: [{ op: 'spendRes', res: G, max: 3, then: [P(add(13, mul(spent, 5)))] }] },
+    text: 'Gasta hasta 3 de Garra. Genera 11 de Peligro, +4 por cada Garra gastada.',
+    upText: 'Gasta hasta 3 de Garra. Genera 13 de Peligro, +5 por cada Garra gastada.',
     art: { tpl: 'contra' },
   },
   {
@@ -65,8 +65,8 @@ export const ATHLETIC_CARDS: CardDef[] = [
   },
   {
     id: 'ath.segunda_jugada', name: 'Segunda Jugada', club: 'athletic', type: 'ataque', rarity: 'comun', cost: 1,
-    ops: [IF(hasRes(G, 4), [P(5, 2)], [P(5)])], up: { ops: [IF(hasRes(G, 4), [P(7, 2)], [P(7)])] },
-    text: 'Genera {P} de Peligro. Si tienes 4+ de Garra, lo hace dos veces.',
+    ops: [IF(hasRes(G, 3), [P(5, 2)], [P(5)])], up: { ops: [IF(hasRes(G, 3), [P(7, 2)], [P(7)])] },
+    text: 'Genera {P} de Peligro. Si tienes 3+ de Garra, lo hace dos veces.',
     art: { tpl: 'cabezazo' },
   },
 
@@ -136,10 +136,10 @@ export const ATHLETIC_CARDS: CardDef[] = [
   },
   {
     id: 'ath.furia', name: 'Furia Rojiblanca', club: 'athletic', type: 'ataque', rarity: 'rara', cost: 2,
-    ops: [{ op: 'spendRes', res: G, max: 'all', then: [P(add(6, mul(spent, 4)))] }],
-    up: { ops: [{ op: 'spendRes', res: G, max: 'all', then: [P(add(8, mul(spent, 5)))] }] },
-    text: 'Gasta toda tu Garra. Genera 6 de Peligro, +4 por cada Garra gastada.',
-    upText: 'Gasta toda tu Garra. Genera 8 de Peligro, +5 por cada Garra gastada.',
+    ops: [{ op: 'spendRes', res: G, max: 'all', then: [P(add(8, mul(spent, 5)))] }],
+    up: { ops: [{ op: 'spendRes', res: G, max: 'all', then: [P(add(10, mul(spent, 6)))] }] },
+    text: 'Gasta toda tu Garra. Genera 8 de Peligro, +5 por cada Garra gastada.',
+    upText: 'Gasta toda tu Garra. Genera 10 de Peligro, +6 por cada Garra gastada.',
     art: { tpl: 'remontada' },
   },
   {

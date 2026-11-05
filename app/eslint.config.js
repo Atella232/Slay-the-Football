@@ -50,4 +50,8 @@ export default defineConfig([
     files: ['src/sim/**/*.ts', 'src/engine/debug/cli.ts', 'e2e/**/*.ts', '*.config.ts'],
     languageOptions: { globals: { ...globals.node } },
   },
+  {
+    files: ['e2e/**/*.ts'],
+    rules: { '@typescript-eslint/no-explicit-any': 'off' },
+  },
 ])

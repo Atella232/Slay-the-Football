@@ -6,7 +6,7 @@ export const ATHLETIC: ClubDef = {
   name: 'Athletic Club',
   short: 'ATH',
   motto: 'Leones con corazón de hierro',
-  forma: 76,
+  forma: 80,
   res: 'garra',
   resName: 'Garra',
   resMax: 10,
